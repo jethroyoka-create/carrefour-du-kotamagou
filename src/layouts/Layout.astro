@@ -15,9 +15,10 @@ export interface Props {
   } | boolean;
   publishedTime?: string;
   category?: string;
+  noindex?: boolean;
 }
 
-const { title, description, image, article, publishedTime, category } = Astro.props;
+const { title, description, image, article, publishedTime, category, noindex } = Astro.props;
 ---
 
 <!doctype html>
@@ -36,6 +37,7 @@ const { title, description, image, article, publishedTime, category } = Astro.pr
       article={article}
       publishedTime={publishedTime}
       category={category}
+      noindex={noindex}
     />
   </head>
   <body class="bg-kaolin text-charbon min-h-screen flex flex-col font-body antialiased selection:bg-ocre-soft selection:text-ocre">

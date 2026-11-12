@@ -1,6 +1,21 @@
 /**
- * Requêtes GROQ normalisées pour Astro SSG
- * Règle stricte : filtrage sur editorialStatus == "publie" pour tous les contenus éditoriaux (Groupe A)
+ * Requêtes GROQ normalisées et hautement sécurisées pour Astro SSG
+ * Projet : Carrefour du Kotamagou
+ *
+ * Règles strictes de sécurité et conformité coutumière :
+ * - Groupe A (Articles & Vidéos) :
+ *     1. editorialStatus == "publie"
+ *     2. culturalValidation.rightsVerified == true (droits témoins et captations vérifiés)
+ *     3. culturalValidation.sensitivityLevel doit être expressément défini et valide :
+ *        - Si "standard" => public
+ *        - Si "sensible" ou "sacre" => exige culturalValidation.culturalValidated == true
+ *        - Si absent, null ou inconnu => strictement et automatiquement EXCLU
+ * - Groupe B (Fonds documentaire & métadonnées) :
+ *     - Clans : validatedByElders == true
+ *     - Termes Ditammari : linguisticValidation == "valide"
+ *     - Personnes : active != false
+ * - Résilience : filtrage strict des références orphelines via [defined(_id)]
+ * - Confidentialité : aucune note interne (validationNote) ni donnée privée n'est projetée
  */
 
 export const siteSettingsQuery = `*[_type == "siteSettings"][0]{
@@ -23,7 +38,7 @@ export const categoriesQuery = `*[_type == "category"] | order(displayOrder asc,
   displayOrder
 }`;
 
-export const articlesQuery = `*[_type == "article" && editorialStatus == "publie"] | order(publishedAt desc){
+export const articlesQuery = `*[_type == "article" && editorialStatus == "publie" && culturalValidation.rightsVerified == true && defined(culturalValidation.sensitivityLevel) && ((culturalValidation.sensitivityLevel == "standard") || (culturalValidation.sensitivityLevel in ["sensible", "sacre"] && culturalValidation.culturalValidated == true))] | order(publishedAt desc){
   _id,
   _type,
   title,
@@ -36,6 +51,7 @@ export const articlesQuery = `*[_type == "article" && editorialStatus == "publie
   editorialStatus,
   "culturalValidation": {
     "culturalValidated": culturalValidation.culturalValidated,
+    "rightsVerified": culturalValidation.rightsVerified,
     "sensitivityLevel": culturalValidation.sensitivityLevel
   },
   category->{
@@ -56,7 +72,7 @@ export const articlesQuery = `*[_type == "article" && editorialStatus == "publie
   }
 }`;
 
-export const articleBySlugQuery = `*[_type == "article" && slug.current == $slug && editorialStatus == "publie"][0]{
+export const articleBySlugQuery = `*[_type == "article" && slug.current == $slug && editorialStatus == "publie" && culturalValidation.rightsVerified == true && defined(culturalValidation.sensitivityLevel) && ((culturalValidation.sensitivityLevel == "standard") || (culturalValidation.sensitivityLevel in ["sensible", "sacre"] && culturalValidation.culturalValidated == true))][0]{
   _id,
   _type,
   title,
@@ -70,6 +86,7 @@ export const articleBySlugQuery = `*[_type == "article" && slug.current == $slug
   editorialStatus,
   "culturalValidation": {
     "culturalValidated": culturalValidation.culturalValidated,
+    "rightsVerified": culturalValidation.rightsVerified,
     "sensitivityLevel": culturalValidation.sensitivityLevel
   },
   category->{
@@ -106,7 +123,7 @@ export const articleBySlugQuery = `*[_type == "article" && slug.current == $slug
   seo
 }`;
 
-export const featuredArticleQuery = `*[_type == "article" && editorialStatus == "publie"] | order(publishedAt desc)[0]{
+export const featuredArticleQuery = `*[_type == "article" && editorialStatus == "publie" && culturalValidation.rightsVerified == true && defined(culturalValidation.sensitivityLevel) && ((culturalValidation.sensitivityLevel == "standard") || (culturalValidation.sensitivityLevel in ["sensible", "sacre"] && culturalValidation.culturalValidated == true))] | order(publishedAt desc)[0]{
   _id,
   _type,
   title,
@@ -118,6 +135,7 @@ export const featuredArticleQuery = `*[_type == "article" && editorialStatus == 
   author,
   "culturalValidation": {
     "culturalValidated": culturalValidation.culturalValidated,
+    "rightsVerified": culturalValidation.rightsVerified,
     "sensitivityLevel": culturalValidation.sensitivityLevel
   },
   category->{
@@ -128,7 +146,7 @@ export const featuredArticleQuery = `*[_type == "article" && editorialStatus == 
   }
 }`;
 
-export const videosQuery = `*[_type == "video" && editorialStatus == "publie"] | order(publishedDate desc){
+export const videosQuery = `*[_type == "video" && editorialStatus == "publie" && culturalValidation.rightsVerified == true && defined(culturalValidation.sensitivityLevel) && ((culturalValidation.sensitivityLevel == "standard") || (culturalValidation.sensitivityLevel in ["sensible", "sacre"] && culturalValidation.culturalValidated == true))] | order(publishedDate desc){
   _id,
   _type,
   title,
@@ -142,6 +160,7 @@ export const videosQuery = `*[_type == "video" && editorialStatus == "publie"] |
   editorialStatus,
   "culturalValidation": {
     "culturalValidated": culturalValidation.culturalValidated,
+    "rightsVerified": culturalValidation.rightsVerified,
     "sensitivityLevel": culturalValidation.sensitivityLevel
   },
   category->{
@@ -159,7 +178,74 @@ export const videosQuery = `*[_type == "video" && editorialStatus == "publie"] |
     _id,
     name,
     country
+  },
+  clans[]->[defined(_id)]{
+    _id,
+    name
+  },
+  ditammariTerms[]->[defined(_id)]{
+    _id,
+    term,
+    frenchTranslation
+  },
+  sources[]->[defined(_id)]{
+    _id,
+    title,
+    author,
+    year
   }
+}`;
+
+export const videoBySlugQuery = `*[_type == "video" && slug.current == $slug && editorialStatus == "publie" && culturalValidation.rightsVerified == true && defined(culturalValidation.sensitivityLevel) && ((culturalValidation.sensitivityLevel == "standard") || (culturalValidation.sensitivityLevel in ["sensible", "sacre"] && culturalValidation.culturalValidated == true))][0]{
+  _id,
+  _type,
+  title,
+  slug,
+  youtubeId,
+  duration,
+  publishedDate,
+  language,
+  summary,
+  transcription,
+  chapters,
+  editorialStatus,
+  "culturalValidation": {
+    "culturalValidated": culturalValidation.culturalValidated,
+    "rightsVerified": culturalValidation.rightsVerified,
+    "sensitivityLevel": culturalValidation.sensitivityLevel
+  },
+  category->{
+    _id,
+    title,
+    slug,
+    pillar
+  },
+  speakers[]->[defined(_id)]{
+    _id,
+    name,
+    role
+  },
+  territories[]->[defined(_id)]{
+    _id,
+    name,
+    country
+  },
+  clans[]->[defined(_id)]{
+    _id,
+    name
+  },
+  ditammariTerms[]->[defined(_id)]{
+    _id,
+    term,
+    frenchTranslation
+  },
+  sources[]->[defined(_id)]{
+    _id,
+    title,
+    author,
+    year
+  },
+  seo
 }`;
 
 export const personsQuery = `*[_type == "person" && active != false] | order(name asc){
@@ -191,7 +277,7 @@ export const territoriesQuery = `*[_type == "territory"] | order(country asc, na
   photo
 }`;
 
-export const clansQuery = `*[_type == "clan"] | order(name asc){
+export const clansQuery = `*[_type == "clan" && validatedByElders == true] | order(name asc){
   _id,
   _type,
   name,
@@ -205,7 +291,7 @@ export const clansQuery = `*[_type == "clan"] | order(name asc){
   }
 }`;
 
-export const ditammariTermsQuery = `*[_type == "ditammariTerm"] | order(term asc){
+export const ditammariTermsQuery = `*[_type == "ditammariTerm" && linguisticValidation == "valide"] | order(term asc){
   _id,
   _type,
   term,

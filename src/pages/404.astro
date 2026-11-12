@@ -5,8 +5,9 @@ import Layout from '@/layouts/Layout.astro';
 <Layout
   title="Page introuvable (404) — Carrefour du Kotamagou"
   description="La page ou le document recherché n'existe pas ou a été déplacé dans les archives de Carrefour du Kotamagou."
+  noindex={true}
 >
-  <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center" data-pagefind-ignore>
     <span class="inline-block text-xs uppercase tracking-widest font-mono text-ocre font-bold mb-3">
       Erreur 404 — Document non localisé
     </span>

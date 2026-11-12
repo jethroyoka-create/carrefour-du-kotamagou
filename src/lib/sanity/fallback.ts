@@ -345,6 +345,7 @@ export const fallbackPersons: Person[] = [
     slug: { current: 'didier-ndah' },
     role: "Professeur titulaire d'archéologie et historien (Université d'Abomey-Calavi)",
     bio: "Spécialiste éminent du peuplement et des vestiges matériels dans l'Atakora, auteur de nombreux travaux académiques sur le Kotamagou.",
+    active: true,
   },
   {
     _id: 'pers-koussey',
@@ -353,6 +354,7 @@ export const fallbackPersons: Person[] = [
     slug: { current: 'noel-koumba-koussey' },
     role: "Historien et enseignant-chercheur",
     bio: "Chercheur engagé dans l'historiographie des Batammariba, la collecte des traditions orales et la sauvegarde patrimoniale.",
+    active: true,
   },
   {
     _id: 'pers-tidouo',
@@ -361,6 +363,7 @@ export const fallbackPersons: Person[] = [
     slug: { current: 'gerard-k-tidouo' },
     role: "Docteur en archéologie",
     bio: "Spécialiste des fouilles archéologiques dans l'Atacora ayant mis au jour des preuves matérielles d'occupation dès le 3e siècle.",
+    active: true,
   },
   {
     _id: 'pers-kouagou',
@@ -369,6 +372,7 @@ export const fallbackPersons: Person[] = [
     slug: { current: 'rigobert-kpanipa-kouagou' },
     role: "Sociologue et enseignant-chercheur",
     bio: "Auteur d'enquêtes sociologiques approfondies sur la parenté, le mariage, la royauté et la socialisation en milieu Tammari.",
+    active: true,
   },
   {
     _id: 'pers-mpo',
@@ -377,6 +381,7 @@ export const fallbackPersons: Person[] = [
     slug: { current: 'roger-tanti-mpo' },
     role: "Acteur culturel et gestionnaire de patrimoine",
     bio: "Personne ressource majeure pour la valorisation du site UNESCO du Koutammakou (secteur Togo) et les savoirs agro-écologiques.",
+    active: true,
   },
   {
     _id: 'pers-gnamou',
@@ -385,6 +390,7 @@ export const fallbackPersons: Person[] = [
     slug: { current: 'philomene-gnamou' },
     role: "Éducatrice et promotrice des droits culturels",
     bio: "Témoin clé de la valorisation de la femme Otammari et de la transmission intergénérationnelle des traditions familiales.",
+    active: true,
   },
 ];
 
