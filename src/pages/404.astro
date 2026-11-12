@@ -1,0 +1,45 @@
+---
+import Layout from '@/layouts/Layout.astro';
+---
+
+<Layout
+  title="Page introuvable (404) — Carrefour du Kotamagou"
+  description="La page ou le document recherché n'existe pas ou a été déplacé dans les archives de Carrefour du Kotamagou."
+>
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
+    <span class="inline-block text-xs uppercase tracking-widest font-mono text-ocre font-bold mb-3">
+      Erreur 404 — Document non localisé
+    </span>
+    <h1 class="font-serif text-4xl sm:text-5xl font-bold text-charbon leading-tight mb-6">
+      Cette page ne figure pas dans nos archives
+    </h1>
+    <p class="font-serif text-lg text-charbon/80 max-w-xl mx-auto mb-8 leading-relaxed">
+      Le lien que vous avez suivi a peut-être expiré, le document a changé de classement ou fait l'objet d'une mise à jour éditoriale.
+    </p>
+
+    <div class="flex flex-wrap justify-center gap-4 text-xs font-sans font-bold uppercase tracking-wider">
+      <a
+        href="/"
+        class="px-5 py-3 bg-ocre text-kaolin rounded-sm hover:bg-ocre/90 transition shadow-sm"
+      >
+        Retourner à l'accueil
+      </a>
+      <a
+        href="/bibliotheque"
+        class="px-5 py-3 bg-kaolin border border-border text-charbon rounded-sm hover:border-charbon transition"
+      >
+        Explorer la Bibliothèque
+      </a>
+      <a
+        href="/recherche"
+        class="px-5 py-3 bg-kaolin border border-border text-charbon rounded-sm hover:border-charbon transition"
+      >
+        Recherche par mots-clés
+      </a>
+    </div>
+
+    <div class="mt-16 pt-8 border-t border-border text-xs text-charbon/60 font-sans">
+      <p>Besoin d'aide pour localiser une archive ? Contactez-nous à <a href="mailto:contact@carrefourdukotamagou.org" class="text-ocre underline">contact@carrefourdukotamagou.org</a>.</p>
+    </div>
+  </div>
+</Layout>

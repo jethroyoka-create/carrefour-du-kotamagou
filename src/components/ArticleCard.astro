@@ -1,0 +1,84 @@
+---
+import type { Article } from '@/lib/sanity/types';
+import { urlForImage } from '@/lib/sanity/image';
+
+export interface Props {
+  article: Article;
+  featured?: boolean;
+}
+
+const { article, featured = false } = Astro.props;
+
+const imageUrl = article.mainImage ? urlForImage(article.mainImage)?.width(featured ? 800 : 400).height(featured ? 500 : 250).url() : null;
+const formattedDate = article.publishedAt ? new Date(article.publishedAt).toLocaleDateString('fr-FR', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric'
+}) : null;
+---
+
+<article class={`group bg-white border border-sable-dark hover:border-ocre transition-all duration-200 overflow-hidden flex flex-col ${featured ? 'md:grid md:grid-cols-2 md:gap-8 items-center' : ''}`}>
+  <!-- Image de couverture ou bandeau typographique -->
+  <div class={`relative overflow-hidden bg-sable ${featured ? 'aspect-video md:aspect-[4/3] w-full h-full' : 'aspect-video w-full'}`}>
+    {imageUrl ? (
+      <img
+        src={imageUrl}
+        alt={article.mainImage?.alt || article.title}
+        loading="lazy"
+        decoding="async"
+        class="w-full h-full object-cover group-hover:scale-103 transition-transform duration-300"
+      />
+    ) : (
+      <div class="w-full h-full flex flex-col justify-between p-6 bg-sable border-b border-border">
+        <div class="flex justify-between items-center text-xs font-ui text-charbon-muted uppercase tracking-wider">
+          <span>{article.category?.title || 'Archive documentaire'}</span>
+          <span>Bénin • Togo</span>
+        </div>
+        <div class="font-heading text-2xl text-charbon italic opacity-40">
+          « {article.title.slice(0, 45)}… »
+        </div>
+        <div class="text-xs font-ui text-ocre font-semibold tracking-wider uppercase">
+          Carrefour du Kotamagou
+        </div>
+      </div>
+    )}
+
+    {article.category && (
+      <div class="absolute top-3 left-3">
+        <span class="badge-category shadow-sm">
+          {article.category.title}
+        </span>
+      </div>
+    )}
+  </div>
+
+  <!-- Contenu textuel -->
+  <div class={`p-6 flex flex-col flex-grow ${featured ? 'md:p-8' : ''}`}>
+    <div class="flex items-center gap-2 text-xs font-ui text-charbon-muted mb-2.5">
+      {formattedDate && <time datetime={article.publishedAt}>{formattedDate}</time>}
+      {formattedDate && article.author && <span>•</span>}
+      {article.author && <span>{article.author}</span>}
+    </div>
+
+    <h3 class={`font-heading font-bold text-charbon group-hover:text-ocre transition-colors leading-tight mb-3 ${featured ? 'text-2xl sm:text-3xl' : 'text-xl'}`}>
+      <a href={`/articles/${article.slug.current}`} class="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ocre">
+        {article.title}
+      </a>
+    </h3>
+
+    <p class="font-body text-charbon-muted text-sm sm:text-base leading-relaxed line-clamp-3 mb-6 flex-grow">
+      {article.excerpt}
+    </p>
+
+    <div class="pt-4 border-t border-sable flex items-center justify-between mt-auto">
+      <span class="font-ui text-xs font-semibold uppercase tracking-wider text-ocre group-hover:underline">
+        Lire la suite &rarr;
+      </span>
+      {article.relatedTerritories && article.relatedTerritories.length > 0 && (
+        <span class="font-ui text-xs text-charbon-muted">
+          📍 {article.relatedTerritories[0].name}
+        </span>
+      )}
+    </div>
+  </div>
+</article>

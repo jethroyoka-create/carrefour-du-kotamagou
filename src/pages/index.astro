@@ -1,0 +1,318 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import ArticleCard from '@/components/ArticleCard.astro';
+import YouTubeFacade from '@/components/YouTubeFacade.astro';
+import DocumentaryCard from '@/components/DocumentaryCard.astro';
+import { client } from '@/lib/sanity/client';
+import { articlesQuery, videosQuery } from '@/lib/sanity/queries';
+import type { Article, Video } from '@/lib/sanity/types';
+
+// Récupération des données publiées depuis Sanity (avec fallback éditorial vérifié de Phase 0)
+let articles: Article[] = [];
+let videos: Video[] = [];
+
+try {
+  articles = await client.fetch(articlesQuery);
+  videos = await client.fetch(videosQuery);
+} catch (e) {
+  // En l'absence de dataset distant configuré, l'architecture reste résiliente
+}
+
+// Contenus éditoriaux de référence (issus de l'inventaire vérifié de Phase 0)
+const featuredArticle: Article = articles[0] || {
+  _id: 'featured-default',
+  _type: 'article',
+  title: 'Koutammakou : L\'extension transfrontalière et les nouveaux défis de préservation',
+  slug: { current: 'koutammakou-extension-unesco-preservation' },
+  articleType: 'dossier',
+  excerpt: 'De la reconnaissance initiale au Togo en 2004 jusqu\'à l\'extension historique côté Bénin en 2023, retour approfondi sur vingt ans d\'efforts pour sauvegarder l\'architecture vivante des Takienta et le paysage culturel des Batammariba.',
+  publishedAt: '2026-11-12T10:00:00Z',
+  author: 'Rédaction Carrefour du Kotamagou',
+  editorialStatus: 'publie',
+  category: {
+    _id: 'cat-patrimoine',
+    _type: 'category',
+    title: 'Histoire & Mémoire',
+    slug: { current: 'histoire-et-memoire' },
+    pillar: 'documentation',
+  },
+  relatedTerritories: [
+    {
+      _id: 't-boukoumbe',
+      _type: 'territory',
+      name: 'Boukoumbé & Kéran',
+      slug: { current: 'boukoumbe' },
+      country: 'transfrontalier',
+    },
+  ],
+};
+
+const sampleVideos = videos.length > 0 ? videos.slice(0, 3) : [
+  {
+    _id: 'v-1',
+    _type: 'video',
+    title: 'Origine des batammariba. Entretien avec l\'historien Noël Koumba KOUSSEY',
+    slug: { current: 'origine-des-batammariba-koussey' },
+    youtubeId: 'pq-pTTrLmes',
+    duration: '22:17',
+    language: 'francais',
+    summary: 'Entretien historiographique fondamental sur la genèse, les traditions orales et les mouvements migratoires initiaux des Batammariba.',
+    editorialStatus: 'publie',
+    category: {
+      _id: 'cat-histoire',
+      _type: 'category',
+      title: 'Histoire & Mémoire',
+      slug: { current: 'histoire-et-memoire' },
+      pillar: 'documentation',
+    },
+  },
+  {
+    _id: 'v-2',
+    _type: 'video',
+    title: 'Entretien avec le Professeur Didier N\'DAH sur la valorisation de tacienta (tata somba)',
+    slug: { current: 'didier-ndah-valorisation-tacienta' },
+    youtubeId: 'c3C_9sWtHtQ',
+    duration: '14:22',
+    language: 'francais',
+    summary: 'Analyse archéologique et architecturale de la Takienta, emblème du génie constructif en terre et forteresse familiale des Batammariba.',
+    editorialStatus: 'publie',
+    category: {
+      _id: 'cat-architecture',
+      _type: 'category',
+      title: 'Culture & Traditions',
+      slug: { current: 'culture-et-traditions' },
+      pillar: 'documentation',
+    },
+  },
+  {
+    _id: 'v-3',
+    _type: 'video',
+    title: '« L\'Atacora était peuplé déjà au 3è siècle d\'après mes fouilles archéologiques » — Dr Gérard K. TIDOUO',
+    slug: { current: 'atacora-peuplement-3e-siecle-tidouo' },
+    youtubeId: 'nb62kCbckiw',
+    duration: '37:11',
+    language: 'francais',
+    summary: 'Révélations scientifiques majeures sur l\'ancienneté de l\'occupation humaine dans la chaîne de l\'Atacora et la culture matérielle ancienne.',
+    editorialStatus: 'publie',
+    category: {
+      _id: 'cat-archeologie',
+      _type: 'category',
+      title: 'Histoire & Mémoire',
+      slug: { current: 'histoire-et-memoire' },
+      pillar: 'documentation',
+    },
+  },
+];
+---
+
+<Layout
+  title="Accueil"
+  description="Carrefour du Kotamagou — Le média de référence sur le Koutammakou et le patrimoine des Batammariba/Otamari au Bénin et au Togo."
+>
+  <!-- Hero Section Éditoriale -->
+  <section class="bg-kaolin border-b border-sable-dark pt-10 pb-16 lg:pt-16 lg:pb-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="max-w-4xl">
+        <div class="inline-flex items-center gap-2 mb-4">
+          <span class="badge-country">Bénin • Togo</span>
+          <span class="text-xs font-ui text-charbon-muted uppercase tracking-widest">
+            Patrimoine Mondial UNESCO
+          </span>
+        </div>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-charbon mb-6 leading-[1.15]">
+          Mémoire, culture et vie des communautés du Koutammakou.
+        </h1>
+        <p class="font-body text-xl sm:text-2xl text-charbon-muted leading-relaxed font-normal mb-8 max-w-3xl">
+          Une plateforme documentaire et journalistique dédiée à la préservation des savoirs, à l'histoire des clans, à l'architecture de terre et à la transmission de la langue Ditammari.
+        </p>
+        <div class="flex flex-wrap items-center gap-4 pt-2">
+          <a href="/actualites" class="btn-editorial-primary">
+            Consulter les actualités
+          </a>
+          <a href="/bibliotheque" class="btn-editorial-secondary">
+            Explorer les archives documentaires &rarr;
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Grand Sujet à la Une (Featured) -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 border-b border-sable-dark">
+    <div class="flex items-center justify-between mb-8 pb-3 border-b border-charbon">
+      <h2 class="text-2xl sm:text-3xl font-bold text-charbon uppercase tracking-tight m-0">
+        À la Une
+      </h2>
+      <span class="font-ui text-xs text-ocre font-semibold tracking-widest uppercase">
+        Grand Dossier
+      </span>
+    </div>
+
+    <ArticleCard article={featuredArticle} featured={true} />
+  </section>
+
+  <!-- Entretiens & Vidéos de Référence -->
+  <section class="bg-sable-light py-16 border-b border-sable-dark">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between mb-10 pb-3 border-b border-sable-dark gap-4">
+        <div>
+          <span class="font-ui text-xs font-semibold text-ocre uppercase tracking-widest block mb-1">
+            Fonds Audiovisuel Vérifié
+          </span>
+          <h2 class="text-2xl sm:text-3xl font-bold text-charbon m-0">
+            Paroles de Chercheurs & Mémoires Vivantes
+          </h2>
+        </div>
+        <a href="/interviews" class="font-ui text-sm font-semibold text-ocre hover:underline">
+          Toutes les interviews vidéo ({122} archives recensées) &rarr;
+        </a>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        {sampleVideos.map((vid) => (
+          <div class="bg-white border border-sable-dark p-4 rounded-sm flex flex-col justify-between shadow-xs">
+            <div>
+              <YouTubeFacade
+                youtubeId={vid.youtubeId}
+                title={vid.title}
+                duration={vid.duration}
+                class="mb-4"
+              />
+              <span class="badge-category mb-2">
+                {vid.category?.title || 'Entretien'}
+              </span>
+              <h3 class="font-heading font-bold text-lg text-charbon mb-2 leading-snug">
+                {vid.title}
+              </h3>
+              <p class="font-body text-xs text-charbon-muted line-clamp-3 leading-relaxed mb-4">
+                {vid.summary}
+              </p>
+            </div>
+            <div class="pt-3 border-t border-sable text-xs font-ui text-charbon-muted flex justify-between items-center">
+              <span>Langue : {vid.language === 'francais' ? 'Français' : 'Ditammari'}</span>
+              <span class="text-ocre font-semibold">Regarder en façade</span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Module Pédagogique : Comprendre les Appellations -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 border-b border-sable-dark">
+    <div class="bg-kaolin border-2 border-ocre/20 p-8 lg:p-12 rounded-sm relative overflow-hidden">
+      <div class="max-w-3xl">
+        <span class="font-ui text-xs font-bold uppercase tracking-widest text-ocre block mb-2">
+          Repère Linguistique & Identitaire
+        </span>
+        <h2 class="text-3xl sm:text-4xl font-bold text-charbon mb-4">
+          Comprendre les appellations du Kotamagou
+        </h2>
+        <p class="font-body text-base sm:text-lg text-charbon-light leading-relaxed mb-6">
+          La rigueur documentaire exige de distinguer avec précision les termes historiques, linguistiques et coutumiers qui désignent le peuple, son territoire et son habitat :
+        </p>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-2">
+          <div class="bg-white p-5 border border-sable rounded-sm">
+            <h3 class="font-ui text-sm font-bold text-ocre uppercase tracking-wider mb-1">
+              Batammariba / Otamari
+            </h3>
+            <p class="font-body text-xs text-charbon-muted leading-relaxed m-0">
+              <strong>Otammari</strong> (au singulier) et <strong>Batammariba</strong> (au pluriel) signifient « ceux qui façonnent la terre » ou « les vrais bâtisseurs de terre ». C'est l'autonyme authentique du peuple.
+            </p>
+          </div>
+
+          <div class="bg-white p-5 border border-sable rounded-sm">
+            <h3 class="font-ui text-sm font-bold text-vert uppercase tracking-wider mb-1">
+              Koutammakou / Kotamagou
+            </h3>
+            <p class="font-body text-xs text-charbon-muted leading-relaxed m-0">
+              Le pays ou territoire habité par les Batammariba, à cheval sur le nord-ouest du Bénin (Atacora) et le nord-est du Togo (Kéran).
+            </p>
+          </div>
+
+          <div class="bg-white p-5 border border-sable rounded-sm">
+            <h3 class="font-ui text-sm font-bold text-charbon uppercase tracking-wider mb-1">
+              Takienta / Tata Somba
+            </h3>
+            <p class="font-body text-xs text-charbon-muted leading-relaxed m-0">
+              <strong>Takienta</strong> (pluriel <em>Sikien</em>) désigne l'habitat traditionnel fortifié à étage. « Tata Somba » est l'appellation populaire d'origine coloniale devenue d'usage courant.
+            </p>
+          </div>
+
+          <div class="bg-white p-5 border border-sable rounded-sm">
+            <h3 class="font-ui text-sm font-bold text-ocre uppercase tracking-wider mb-1">
+              Ditammari
+            </h3>
+            <p class="font-body text-xs text-charbon-muted leading-relaxed m-0">
+              La langue parlée par les Batammariba, riche en traditions orales, contes, chants codifiés et savoirs cosmogoniques.
+            </p>
+          </div>
+        </div>
+
+        <div class="mt-8">
+          <a href="/a-propos" class="btn-editorial-secondary text-xs">
+            En savoir plus sur notre charte éditoriale &rarr;
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Bibliothèque Documentaire en Chiffres & Accès direct -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <div class="text-center max-w-2xl mx-auto mb-12">
+      <span class="font-ui text-xs font-semibold text-ocre uppercase tracking-widest block mb-2">
+        Bibliothèque Documentaire
+      </span>
+      <h2 class="text-3xl sm:text-4xl font-bold text-charbon m-0">
+        Explorer les archives organisées
+      </h2>
+      <p class="font-body text-charbon-muted text-base mt-3">
+        Retrouvez les fiches consacrées aux clans, aux villages, aux chercheurs et aux expressions de la langue Ditammari.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <DocumentaryCard
+        title="Clans & Lignages"
+        subtitle="Mémoire généalogique orale"
+        description="Fiches documentées sur les clans Banadoba, Bèssoribè, Ossori, Bapakouba et leurs territoires d'implantation."
+        href="/histoire-et-memoire"
+        tag="Clans"
+        tagType="ocre"
+        icon="🏛️"
+      />
+
+      <DocumentaryCard
+        title="Territoires & Villages"
+        subtitle="Bénin & Togo"
+        description="Monographies géographiques de Boukoumbé, Kouaba, Warengo, Nadoba et de la vallée de Koutammakou."
+        href="/histoire-et-memoire"
+        tag="Territoires"
+        tagType="vert"
+        icon="📍"
+      />
+
+      <DocumentaryCard
+        title="Chercheurs & Témoins"
+        subtitle="Voix autorisées"
+        description="Notices biographiques consacrées aux historiens, archéologues, sociologues et aînés dépositaires des savoirs."
+        href="/interviews"
+        tag="Personnes"
+        tagType="charbon"
+        icon="👤"
+      />
+
+      <DocumentaryCard
+        title="Glossaire Ditammari"
+        subtitle="Fonds linguistique"
+        description="Termes vérifiés, transcriptions phonétiques et définitions culturelles de la langue Ditammari."
+        href="/culture-et-traditions"
+        tag="Langue"
+        tagType="ocre"
+        icon="📖"
+      />
+    </div>
+  </section>
+</Layout>

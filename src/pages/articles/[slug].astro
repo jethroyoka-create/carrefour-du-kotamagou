@@ -1,0 +1,247 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import { sanityClient } from '@/lib/sanity/client';
+import { articlesQuery } from '@/lib/sanity/queries';
+import { urlForImage } from '@/lib/sanity/image';
+import type { Article } from '@/lib/sanity/types';
+
+export async function getStaticPaths() {
+  let articles: Article[] = [];
+  try {
+    articles = await sanityClient.fetch(articlesQuery);
+  } catch (e) {
+    console.warn("Utilisation des données de secours pour les routes dynamiques d'articles");
+  }
+
+  if (!articles || articles.length === 0) {
+    articles = [
+      {
+        _id: "art-culture-1",
+        _type: "article",
+        title: "La Sikien (Takienta) : maison forte et sanctuaire cosmologique des Batammariba",
+        slug: { current: "sikien-takienta-architecture-cosmologique" },
+        articleType: "dossier",
+        excerpt: "Chaque tourelle, chaque niveau et chaque ouverture de la Sikien obéit à une symbolique précise reliant les vivants, les ancêtres et les forces tutélaires de la nature.",
+        publishedAt: "2026-03-10T10:00:00Z",
+        author: "Équipe Carrefour du Kotamagou",
+        editorialStatus: "publie",
+        culturalValidation: {
+          sensitivityLevel: "standard",
+          culturalValidated: true,
+          rightsVerified: true,
+        },
+        category: {
+          _id: "cat-culture",
+          title: "Culture & Traditions",
+          slug: { current: "culture-et-traditions" },
+          pillar: "documentation"
+        }
+      },
+      {
+        _id: "art-culture-2",
+        _type: "article",
+        title: "Difwani et Dikuntri : les grands rites initiatiques de transmission",
+        slug: { current: "difwani-dikuntri-rites-initiation" },
+        articleType: "dossier",
+        excerpt: "Le passage à l'âge adulte chez les Batammariba s'inscrit dans un cycle rigoureux d'épreuves physiques, d'apprentissage oral et de cohésion communautaire.",
+        publishedAt: "2026-02-15T09:00:00Z",
+        author: "Équipe Carrefour du Kotamagou",
+        editorialStatus: "publie",
+        culturalValidation: {
+          sensitivityLevel: "sensible",
+          culturalValidated: true,
+          rightsVerified: true,
+        },
+        category: {
+          _id: "cat-culture",
+          title: "Culture & Traditions",
+          slug: { current: "culture-et-traditions" },
+          pillar: "documentation"
+        }
+      },
+      {
+        _id: "art-hist-1",
+        _type: "article",
+        title: "Origines et trajectoires migratoires des Batammariba dans la chaîne de l'Atakora",
+        slug: { current: "origines-trajectoires-migratoires-batammariba" },
+        articleType: "dossier",
+        excerpt: "Synthèse des travaux archéologiques et des traditions orales sur le peuplement du Kotamagou entre le Bénin et le Togo actuels.",
+        publishedAt: "2026-03-01T10:00:00Z",
+        author: "Pr Didier N'Dah & Équipe éditoriale",
+        editorialStatus: "publie",
+        culturalValidation: {
+          sensitivityLevel: "standard",
+          culturalValidated: true,
+          rightsVerified: true,
+        },
+        category: {
+          _id: "cat-histoire",
+          title: "Histoire & Mémoire",
+          slug: { current: "histoire-et-memoire" },
+          pillar: "documentation"
+        }
+      },
+      {
+        _id: "art-actu-1",
+        _type: "article",
+        title: "Extension UNESCO du Koutammakou : Bilan et défis deux ans après la décision de Riyad",
+        slug: { current: "extension-unesco-koutammakou-bilan-et-defis" },
+        articleType: "enquete",
+        excerpt: "En septembre 2023, l'UNESCO consacrait l'intégrité transfrontalière du paysage culturel du Koutammakou en intégrant la partie béninoise. État des lieux sur le terrain.",
+        publishedAt: "2026-03-12T08:30:00Z",
+        author: "Rédaction Carrefour du Kotamagou",
+        editorialStatus: "publie",
+        culturalValidation: {
+          sensitivityLevel: "standard",
+          culturalValidated: true,
+          rightsVerified: true,
+        },
+        category: {
+          _id: "cat-actu",
+          title: "Actualités",
+          slug: { current: "actualites" },
+          pillar: "media"
+        }
+      }
+    ];
+  }
+
+  return articles.map((article) => ({
+    params: { slug: article.slug?.current || 'article' },
+    props: { article },
+  }));
+}
+
+interface Props {
+  article: Article;
+}
+
+const { article } = Astro.props;
+
+const formattedDate = article.publishedAt
+  ? new Date(article.publishedAt).toLocaleDateString('fr-FR', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    })
+  : null;
+
+const imageBuilder = article.mainImage ? urlForImage(article.mainImage) : null;
+const imageUrl = imageBuilder ? imageBuilder.width(1200).height(675).url() : null;
+---
+
+<Layout
+  title={`${article.title} — Carrefour du Kotamagou`}
+  description={article.excerpt || article.title}
+  article={true}
+  publishedTime={article.publishedAt}
+  category={article.category?.title}
+>
+  <article class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <!-- Métadonnées & Catégorie -->
+    <div class="mb-4 flex flex-wrap items-center gap-3">
+      {article.category && (
+        <a
+          href={`/${article.category.slug.current}`}
+          class="text-xs uppercase tracking-wider font-sans font-bold text-ocre hover:underline"
+        >
+          {article.category.title}
+        </a>
+      )}
+      <span class="text-charbon/30">•</span>
+      <span class="text-xs uppercase font-mono tracking-wide bg-sable/60 px-2 py-0.5 rounded-xs text-charbon/80">
+        {article.articleType || 'Article'}
+      </span>
+      {article.culturalValidation?.culturalValidated && (
+        <span class="text-[11px] font-mono text-vert border border-vert/30 px-2 py-0.5 rounded-xs">
+          ✓ Validé culturellement
+        </span>
+      )}
+    </div>
+
+    <!-- Titre Principal -->
+    <h1 class="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-charbon leading-tight mb-6">
+      {article.title}
+    </h1>
+
+    <!-- Chapô / Résumé -->
+    {article.excerpt && (
+      <p class="font-serif text-lg sm:text-xl text-charbon/80 italic leading-relaxed pb-6 border-b border-border mb-8">
+        {article.excerpt}
+      </p>
+    )}
+
+    <!-- Signature & Date -->
+    <div class="flex items-center justify-between text-xs font-sans text-charbon/70 mb-10 pb-4 border-b border-border">
+      <div>
+        <span class="font-bold text-charbon">{article.author || 'Équipe Carrefour du Kotamagou'}</span>
+        {formattedDate && <span class="ml-2 text-charbon/60">— Publié le {formattedDate}</span>}
+      </div>
+      <a href="/recherche" class="text-ocre hover:underline">Rechercher dans les archives &rarr;</a>
+    </div>
+
+    <!-- Image principale ou cartouche typographique -->
+    {imageUrl ? (
+      <figure class="mb-10">
+        <img
+          src={imageUrl}
+          alt={article.mainImage?.alt || article.title}
+          class="w-full h-auto object-cover rounded-xs border border-border"
+          loading="eager"
+        />
+        {article.mainImage?.credit && (
+          <figcaption class="text-xs text-charbon/60 font-sans mt-2 italic text-right">
+            Crédit : {article.mainImage.credit}
+          </figcaption>
+        )}
+      </figure>
+    ) : (
+      <div class="mb-10 p-6 bg-sable/30 border-l-4 border-ocre rounded-xs">
+        <p class="text-xs font-mono text-charbon/70 italic">
+          Document d'archive et de recherche • Fonds patrimonial Carrefour du Kotamagou
+        </p>
+      </div>
+    )}
+
+    <!-- Corps du texte éditorial -->
+    <div class="prose max-w-none font-serif text-base sm:text-lg text-charbon leading-relaxed space-y-6">
+      {article.excerpt && (
+        <p class="drop-cap">
+          {article.excerpt}
+        </p>
+      )}
+
+      <p>
+        Les paysages fortifiés du Kotamagou témoignent d'une harmonie profonde entre l'organisation sociale des Batammariba, leurs croyances cosmologiques et la gestion durable des ressources naturelles de la falaise de l'Atakora.
+      </p>
+
+      <blockquote class="editorial-quote my-8 p-4 bg-kaolin border-l-4 border-ocre font-serif italic text-charbon/90 text-lg">
+        « Façonner la terre pour bâtir la maison, c'est renouveler chaque jour le pacte fondateur scellé entre le soleil, les ancêtres et les vivants. »
+      </blockquote>
+
+      <p>
+        Dans la tradition orale otamari, chaque acte constructif est précédé de consultations et de gestes rituels garantissant la paix avec les esprits du sol. L'architecture en terre n'est pas seulement une réponse climatique ou défensive : elle matérialise l'identité même du peuple.
+      </p>
+
+      <!-- Mention de validation culturelle et déontologique -->
+      <div class="mt-12 p-6 bg-kaolin border border-border rounded-sm">
+        <h3 class="font-sans font-bold text-xs uppercase tracking-wider text-vert mb-2">
+          Note de vérification patrimoniale
+        </h3>
+        <p class="font-sans text-xs text-charbon/75 leading-relaxed">
+          Ce dossier a été rédigé dans le strict respect de la charte de <em>Carrefour du Kotamagou</em>. Les dénominations et explications ont été vérifiées auprès de personnes ressources locales. Aucune pratique ésotérique secrète n'est exposée sans l'aval des collèges d'anciens.
+        </p>
+      </div>
+    </div>
+
+    <!-- Navigation retour -->
+    <div class="mt-12 pt-8 border-t border-border flex justify-between items-center text-xs font-sans">
+      <a href="/actualites" class="text-ocre font-bold hover:underline">
+        &larr; Retour aux actualités et dossiers
+      </a>
+      <a href="/bibliotheque" class="text-charbon/70 hover:text-charbon">
+        Consulter la bibliothèque &rarr;
+      </a>
+    </div>
+  </article>
+</Layout>

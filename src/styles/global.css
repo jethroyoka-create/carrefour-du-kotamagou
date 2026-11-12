@@ -1,0 +1,98 @@
+@import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400..700;1,6..72,400..700&family=Public+Sans:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --bg-page: #FAF8F4;
+    --text-main: #161412;
+    --text-muted: #524C46;
+    --accent-ocre: #8C3B22;
+    --accent-vert: #234738;
+    --border-subtle: #E2DCD3;
+    --surface-card: #FFFFFF;
+  }
+
+  html {
+    background-color: var(--bg-page);
+    color: var(--text-main);
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 17px;
+    line-height: 1.7;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Newsreader', Georgia, serif;
+    font-weight: 600;
+    line-height: 1.25;
+    color: var(--text-main);
+    letter-spacing: -0.015em;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 150ms ease-in-out;
+  }
+
+  /* Accessibilité clavier : focus visible et soigné */
+  *:focus-visible {
+    outline: 2px solid var(--accent-ocre);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  /* Respect des préférences de réduction de mouvement */
+  @media (prefers-reduced-motion: reduce) {
+    *, ::before, ::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
+  /* Sélection de texte aux couleurs de la terre */
+  ::selection {
+    background-color: #F4ECE8;
+    color: #8C3B22;
+  }
+}
+
+@layer components {
+  .btn-editorial-primary {
+    @apply inline-flex items-center justify-center px-6 py-3 font-ui text-sm font-medium tracking-wide uppercase text-white bg-ocre hover:bg-ocre-dark transition-colors duration-200 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ocre focus-visible:ring-offset-2;
+  }
+
+  .btn-editorial-secondary {
+    @apply inline-flex items-center justify-center px-6 py-3 font-ui text-sm font-medium tracking-wide text-charbon bg-transparent border border-sable-dark hover:border-charbon hover:bg-sable-light transition-all duration-200;
+  }
+
+  .badge-category {
+    @apply inline-block font-ui text-xs font-semibold uppercase tracking-wider px-2.5 py-1 text-ocre bg-ocre-soft rounded-sm;
+  }
+
+  .badge-country {
+    @apply inline-block font-ui text-xs font-medium px-2 py-0.5 text-vert bg-vert-soft rounded-sm;
+  }
+
+  .editorial-quote {
+    @apply border-l-2 border-ocre pl-6 my-8 italic text-xl font-heading text-charbon-light leading-relaxed;
+  }
+
+  .drop-cap:first-letter {
+    @apply float-left text-5xl font-heading font-bold text-ocre mr-3 leading-none pt-1;
+  }
+}

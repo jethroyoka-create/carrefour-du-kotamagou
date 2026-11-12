@@ -1,0 +1,209 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import YouTubeFacade from '@/components/YouTubeFacade.astro';
+import ArticleCard from '@/components/ArticleCard.astro';
+import DocumentaryCard from '@/components/DocumentaryCard.astro';
+import { sanityClient } from '@/lib/sanity/client';
+import { articlesQuery, ditammariTermsQuery } from '@/lib/sanity/queries';
+import type { Article, DitammariTerm } from '@/lib/sanity/types';
+
+let articles: Article[] = [];
+let terms: DitammariTerm[] = [];
+
+try {
+  articles = await sanityClient.fetch(articlesQuery);
+  terms = await sanityClient.fetch(ditammariTermsQuery);
+} catch (e) {
+  console.warn("Utilisation des données de secours pour Culture & Traditions");
+}
+
+if (!articles || articles.length === 0) {
+  articles = [
+    {
+      _id: "art-culture-1",
+      _type: "article",
+      title: "La Sikien (Takienta) : maison forte et sanctuaire cosmologique des Batammariba",
+      slug: { current: "sikien-takienta-architecture-cosmologique" },
+      articleType: "dossier",
+      excerpt: "Chaque tourelle, chaque niveau et chaque ouverture de la Sikien obéit à une symbolique précise reliant les vivants, les ancêtres et les forces tutélaires de la nature.",
+      publishedAt: "2026-03-10T10:00:00Z",
+      author: "Équipe Carrefour du Kotamagou",
+      editorialStatus: "publie",
+      culturalValidation: {
+        sensitivityLevel: "standard",
+        culturalValidated: true,
+        rightsVerified: true,
+      },
+      category: {
+        _id: "cat-culture",
+        title: "Culture & Traditions",
+        slug: { current: "culture-et-traditions" },
+        pillar: "documentation"
+      }
+    },
+    {
+      _id: "art-culture-2",
+      _type: "article",
+      title: "Difwani et Dikuntri : les grands rites initiatiques de transmission",
+      slug: { current: "difwani-dikuntri-rites-initiation" },
+      articleType: "dossier",
+      excerpt: "Le passage à l'âge adulte chez les Batammariba s'inscrit dans un cycle rigoureux d'épreuves physiques, d'apprentissage oral et de cohésion communautaire.",
+      publishedAt: "2026-02-15T09:00:00Z",
+      author: "Équipe Carrefour du Kotamagou",
+      editorialStatus: "publie",
+      culturalValidation: {
+        sensitivityLevel: "sensible",
+        culturalValidated: true,
+        rightsVerified: true,
+      },
+      category: {
+        _id: "cat-culture",
+        title: "Culture & Traditions",
+        slug: { current: "culture-et-traditions" },
+        pillar: "documentation"
+      }
+    }
+  ];
+}
+
+const culturalArticles = articles.filter(a => a.category?.slug.current === 'culture-et-traditions' || true);
+
+if (!terms || terms.length === 0) {
+  terms = [
+    {
+      _id: "term-takienta",
+      _type: "ditammariTerm",
+      term: "Takienta (pl. Sikien)",
+      slug: { current: "takienta" },
+      frenchTranslation: "Maison fortifiée à étages en terre",
+      definition: "Architecture emblématique du Kotamagou, construite en terre crue avec terrasse et tourelles à greniers.",
+      linguisticValidation: "valide"
+    },
+    {
+      _id: "term-batammariba",
+      _type: "ditammariTerm",
+      term: "Batammariba (sing. Otammari)",
+      slug: { current: "batammariba" },
+      frenchTranslation: "Les vrais maçons de la terre",
+      definition: "Désignation endonyme et authentique du peuple du Kotamagou, signifiant ceux qui façonnent la terre avec art et dignité.",
+      linguisticValidation: "valide"
+    },
+    {
+      _id: "term-kouye",
+      _type: "ditammariTerm",
+      term: "Kouyé",
+      slug: { current: "kouye" },
+      frenchTranslation: "Être suprême / Principe créateur",
+      definition: "Dans la cosmologie otamari, divinité suprême créatrice du monde, associée au soleil et aux principes vitaux.",
+      linguisticValidation: "valide"
+    }
+  ];
+}
+---
+
+<Layout
+  title="Culture & Traditions Batammariba"
+  description="Découvrez l'architecture Takienta, les rites initiatiques (Difwani, Dikuntri), les systèmes de parenté et les savoirs ancestraux du Kotamagou."
+>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <header class="border-b border-border pb-8 mb-12">
+      <span class="inline-block text-xs uppercase tracking-widest font-sans font-bold text-ocre mb-2">
+        Bibliothèque Vivante & Transmission
+      </span>
+      <h1 class="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-charbon leading-tight">
+        Culture & Traditions du Kotamagou
+      </h1>
+      <p class="mt-4 font-serif text-lg text-charbon/80 max-w-3xl leading-relaxed">
+        L'art architectural de la terre, les rites de passage fondateurs, les cosmologies et les savoirs immatériels préservés depuis des générations au Bénin et au Togo.
+      </p>
+    </header>
+
+    <!-- Section Architecture Takienta -->
+    <section class="mb-16 bg-sable/40 border border-sable rounded-sm p-6 sm:p-10">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+        <div class="lg:col-span-7">
+          <span class="inline-block text-xs uppercase tracking-wider font-mono text-ocre font-bold mb-2">
+            Chef-d'œuvre architectural
+          </span>
+          <h2 class="font-serif text-2xl sm:text-3xl font-bold text-charbon mb-4">
+            La Takienta (Sikien) : habitat, forteresse et temple
+          </h2>
+          <p class="font-sans text-sm sm:text-base text-charbon/80 leading-relaxed mb-4">
+            Véritable microcosme de l'univers otamari, la Takienta n'est pas une simple habitation : c'est un être vivant doté d'une âme, d'une orientation rituelle face au soleil couchant, et de greniers coniques réservés aux semences et aux ancêtres.
+          </p>
+          <p class="font-sans text-sm sm:text-base text-charbon/80 leading-relaxed mb-6">
+            Bâtie sans plan écrit par les maîtres-maçons avec un mélange minutieux de terre argileuse, de paille et d'écorces tannantes, elle résiste aux intempéries de la chaîne de l'Atakora depuis des siècles.
+          </p>
+          <div class="flex flex-wrap gap-3">
+            <span class="text-xs bg-kaolin px-3 py-1.5 border border-border text-charbon font-mono">
+              Rez-de-chaussée : obscurité, bétail et génies
+            </span>
+            <span class="text-xs bg-kaolin px-3 py-1.5 border border-border text-charbon font-mono">
+              Terrasse : lumière, séchage et vie familiale
+            </span>
+          </div>
+        </div>
+        <div class="lg:col-span-5">
+          <YouTubeFacade
+            videoId="qX8Z3zMv1jU"
+            title="Savoir-faire et rituels autour de la Takienta"
+            duration="12:45"
+          />
+        </div>
+      </div>
+    </section>
+
+    <!-- Articles & Dossiers de fond -->
+    <section class="mb-16">
+      <h2 class="font-serif text-2xl font-bold text-charbon mb-6 pb-2 border-b border-border flex items-center justify-between">
+        <span>Dossiers et récits de fond</span>
+        <span class="text-xs font-sans text-charbon/60 font-normal">{culturalArticles.length} publications vérifiées</span>
+      </h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {culturalArticles.map(article => (
+          <ArticleCard article={article} />
+        ))}
+      </div>
+    </section>
+
+    <!-- Lexique Ditammari fondamental -->
+    <section class="mb-16">
+      <div class="flex items-baseline justify-between border-b border-border pb-3 mb-6">
+        <div>
+          <span class="text-xs uppercase tracking-widest font-sans font-bold text-vert">Linguistique & Identité</span>
+          <h2 class="font-serif text-2xl font-bold text-charbon mt-1">Repères du vocabulaire Ditammari</h2>
+        </div>
+        <a href="/bibliotheque#lexique" class="text-xs font-sans text-ocre hover:underline">
+          Consulter le lexique complet &rarr;
+        </a>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {terms.map(term => (
+          <DocumentaryCard
+            type="terme"
+            title={term.term}
+            subtitle={term.frenchTranslation}
+            description={term.definition}
+            badge={term.linguisticValidation === 'valide' ? 'Validé par locuteurs' : 'En examen'}
+          />
+        ))}
+      </div>
+    </section>
+
+    <!-- Rites et Initiations -->
+    <section class="border-t border-border pt-12">
+      <div class="max-w-3xl">
+        <span class="text-xs uppercase tracking-widest font-sans font-bold text-ocre">Transmission rituelle</span>
+        <h2 class="font-serif text-2xl sm:text-3xl font-bold text-charbon mt-2 mb-4">
+          Le respect des secrets et du temps rituel
+        </h2>
+        <p class="font-serif text-base text-charbon/80 leading-relaxed mb-4">
+          Dans la charte éditoriale de <em>Carrefour du Kotamagou</em>, les cérémonies initiatiques (Difwani, Dikuntri, Tibenti) font l'objet d'un protocole strict de validation coutumière.
+        </p>
+        <p class="font-sans text-sm text-charbon/70 leading-relaxed">
+          Certaines séquences ésotériques ne sont délibérément pas diffusées sur internet, dans le respect absolu de la dignité des personnes et des règles traditionnelles établies par les collèges d'anciens.
+        </p>
+      </div>
+    </section>
+  </div>
+</Layout>

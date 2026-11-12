@@ -1,0 +1,71 @@
+---
+export interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  article?: {
+    publishedTime?: string;
+    author?: string;
+    section?: string;
+  } | boolean;
+  publishedTime?: string;
+  category?: string;
+}
+
+const {
+  title,
+  description = "Média d'information et plateforme documentaire de référence sur le Koutammakou et le patrimoine Batammariba au Bénin et au Togo.",
+  image = "/og-default.jpg",
+  article,
+  publishedTime,
+  category,
+} = Astro.props;
+
+const isArticle = !!article;
+const articlePubTime = typeof article === 'object' && article ? article.publishedTime : publishedTime;
+const articleAuthor = typeof article === 'object' && article ? article.author : undefined;
+const articleSection = typeof article === 'object' && article ? article.section : category;
+
+const siteName = "Carrefour du Kotamagou";
+const pageTitle = title ? `${title} — ${siteName}` : `${siteName} — Le média du Koutammakou`;
+const canonicalURL = new URL(Astro.url.pathname, Astro.site || "https://carrefour-du-kotamagou.pages.dev");
+const imageURL = new URL(image, Astro.site || "https://carrefour-du-kotamagou.pages.dev");
+---
+
+<!-- Titre & Balises fondamentales -->
+<title>{pageTitle}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonicalURL} />
+
+<!-- Open Graph / Facebook / WhatsApp -->
+<meta property="og:site_name" content={siteName} />
+<meta property="og:title" content={pageTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonicalURL} />
+<meta property="og:image" content={imageURL} />
+<meta property="og:type" content={isArticle ? "article" : "website"} />
+<meta property="og:locale" content="fr_FR" />
+
+{articlePubTime && <meta property="article:published_time" content={articlePubTime} />}
+{articleAuthor && <meta property="article:author" content={articleAuthor} />}
+{articleSection && <meta property="article:section" content={articleSection} />}
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={pageTitle} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={imageURL} />
+
+<!-- Balisage sémantique JSON-LD (Schema.org) -->
+<script type="application/ld+json" set:html={JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": isArticle ? "NewsArticle" : "NewsMediaOrganization",
+  "name": siteName,
+  "headline": pageTitle,
+  "description": description,
+  "url": canonicalURL.toString(),
+  "image": imageURL.toString(),
+  "inLanguage": "fr",
+  ...(articlePubTime ? { "datePublished": articlePubTime } : {}),
+  ...(articleAuthor ? { "author": { "@type": "Person", "name": articleAuthor } } : {})
+})} />

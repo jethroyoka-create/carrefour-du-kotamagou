@@ -1,0 +1,431 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import ArticleCard from '@/components/ArticleCard.astro';
+import DocumentaryCard from '@/components/DocumentaryCard.astro';
+import YouTubeFacade from '@/components/YouTubeFacade.astro';
+import { sanityClient } from '@/lib/sanity/client';
+import {
+  articlesQuery,
+  videosQuery,
+  personsQuery,
+  territoriesQuery,
+  clansQuery,
+  ditammariTermsQuery,
+  sourcesQuery
+} from '@/lib/sanity/queries';
+import type { Article, Video, Person, Territory, Clan, DitammariTerm, Source } from '@/lib/sanity/types';
+
+let articles: Article[] = [];
+let videos: Video[] = [];
+let persons: Person[] = [];
+let territories: Territory[] = [];
+let clans: Clan[] = [];
+let terms: DitammariTerm[] = [];
+let sources: Source[] = [];
+
+try {
+  articles = await sanityClient.fetch(articlesQuery);
+  videos = await sanityClient.fetch(videosQuery);
+  persons = await sanityClient.fetch(personsQuery);
+  territories = await sanityClient.fetch(territoriesQuery);
+  clans = await sanityClient.fetch(clansQuery);
+  terms = await sanityClient.fetch(ditammariTermsQuery);
+  sources = await sanityClient.fetch(sourcesQuery);
+} catch (e) {
+  console.warn("Utilisation des données de secours pour la Bibliothèque Documentaire");
+}
+
+// Fallbacks de résilience pour garantir une navigation complète et documentée
+if (!articles || articles.length === 0) {
+  articles = [
+    {
+      _id: "art-bib-1",
+      _type: "article",
+      title: "La Sikien (Takienta) : maison forte et sanctuaire cosmologique des Batammariba",
+      slug: { current: "sikien-takienta-architecture-cosmologique" },
+      articleType: "dossier",
+      excerpt: "Chaque tourelle, chaque niveau et chaque ouverture de la Sikien obéit à une symbolique précise reliant les vivants, les ancêtres et les forces tutélaires de la nature.",
+      publishedAt: "2026-03-10T10:00:00Z",
+      author: "Équipe Carrefour du Kotamagou",
+      editorialStatus: "publie",
+      culturalValidation: { sensitivityLevel: "standard", culturalValidated: true, rightsVerified: true },
+      category: { _id: "c1", title: "Culture & Traditions", slug: { current: "culture-et-traditions" }, pillar: "documentation" }
+    },
+    {
+      _id: "art-bib-2",
+      _type: "article",
+      title: "Origines et trajectoires migratoires des Batammariba dans la chaîne de l'Atakora",
+      slug: { current: "origines-trajectoires-migratoires-batammariba" },
+      articleType: "dossier",
+      excerpt: "Synthèse des travaux archéologiques et des traditions orales sur le peuplement du Kotamagou entre le Bénin et le Togo actuels.",
+      publishedAt: "2026-03-01T10:00:00Z",
+      author: "Pr Didier N'Dah & Équipe éditoriale",
+      editorialStatus: "publie",
+      culturalValidation: { sensitivityLevel: "standard", culturalValidated: true, rightsVerified: true },
+      category: { _id: "c2", title: "Histoire & Mémoire", slug: { current: "histoire-et-memoire" }, pillar: "documentation" }
+    }
+  ];
+}
+
+if (!videos || videos.length === 0) {
+  videos = [
+    {
+      _id: "vid-bib-1",
+      _type: "video",
+      title: "Entretien exclusif avec le Pr Didier N'Dah : Archéologie et mémoires de l'Atakora",
+      slug: { current: "entretien-didier-ndah-archeologie-atakora" },
+      youtubeId: "W7oH59c2580",
+      duration: "24:18",
+      publishedDate: "2026-02-28",
+      language: "francais",
+      summary: "Le professeur Didier N'Dah, enseignant-chercheur à l'Université d'Abomey-Calavi, détaille les découvertes archéologiques dans le nord du Bénin.",
+      editorialStatus: "publie",
+      culturalValidation: { sensitivityLevel: "standard", culturalValidated: true, rightsVerified: true }
+    }
+  ];
+}
+
+if (!persons || persons.length === 0) {
+  persons = [
+    {
+      _id: "pers-ndah",
+      _type: "person",
+      name: "Pr Didier N'Dah",
+      slug: { current: "didier-ndah" },
+      role: "Professeur d'archéologie et historien (Université d'Abomey-Calavi)",
+      bio: "Spécialiste éminent du peuplement et des vestiges matériels dans l'Atakora, auteur de nombreux travaux sur le Kotamagou."
+    },
+    {
+      _id: "pers-koussey",
+      _type: "person",
+      name: "Noël Koussey",
+      slug: { current: "noel-koussey" },
+      role: "Conservateur du patrimoine & animateur culturel",
+      bio: "Acteur de premier plan de la préservation de l'architecture traditionnelle et de la transmission intergénérationnelle."
+    },
+    {
+      _id: "pers-tidouo",
+      _type: "person",
+      name: "Dr Tidouo",
+      slug: { current: "dr-tidouo" },
+      role: "Chercheur en sciences humaines et traditions orales",
+      bio: "Documentaliste des savoirs oraux, des généalogies claniques et de la toponymie transfrontalière."
+    }
+  ];
+}
+
+if (!territories || territories.length === 0) {
+  territories = [
+    {
+      _id: "ter-boukoumbe",
+      _type: "territory",
+      name: "Boukoumbé",
+      slug: { current: "boukoumbe" },
+      country: "benin",
+      administrativeRegion: "Département de l'Atacora",
+      isUnescoSite: true,
+      description: "Cœur historique du pays Otammari au Bénin, célèbre pour sa concentration de Sikien traditionnelles et son marché."
+    },
+    {
+      _id: "ter-nadoba",
+      _type: "territory",
+      name: "Nadoba",
+      slug: { current: "nadoba" },
+      country: "togo",
+      administrativeRegion: "Région de la Kara",
+      isUnescoSite: true,
+      description: "Zone pionnière inscrite au Patrimoine Mondial en 2004, haut lieu de préservation de l'habitat fortifié."
+    },
+    {
+      _id: "ter-koussoucoing",
+      _type: "territory",
+      name: "Koussoucoing",
+      slug: { current: "koussoucoing" },
+      country: "benin",
+      administrativeRegion: "Commune de Boukoumbé",
+      isUnescoSite: true,
+      description: "Perché sur les hauteurs de la falaise, carrefour culturel et point d'observation remarquable de la chaîne de l'Atakora."
+    }
+  ];
+}
+
+if (!clans || clans.length === 0) {
+  clans = [
+    {
+      _id: "c-1",
+      _type: "clan",
+      name: "Banadoba",
+      slug: { current: "banadoba" },
+      originStory: "Lignée pionnière liée à l'installation originelle et aux autels de la falaise.",
+      validatedByElders: true
+    },
+    {
+      _id: "c-2",
+      _type: "clan",
+      name: "Bèssoribè",
+      slug: { current: "bessoribe" },
+      originStory: "Lignée réputée pour ses maîtres constructeurs et le travail de la terre cuite et du fer.",
+      validatedByElders: true
+    },
+    {
+      _id: "c-3",
+      _type: "clan",
+      name: "Ossori",
+      slug: { current: "ossori" },
+      originStory: "Gardiens de passages et de la régulation coutumière des ressources terriennes.",
+      validatedByElders: true
+    }
+  ];
+}
+
+if (!terms || terms.length === 0) {
+  terms = [
+    {
+      _id: "t-1",
+      _type: "ditammariTerm",
+      term: "Takienta (pl. Sikien)",
+      slug: { current: "takienta" },
+      frenchTranslation: "Maison fortifiée à étages en terre",
+      definition: "Architecture emblématique du Kotamagou, alliant fonction de défense, greniers à céréales et sanctuaire familial.",
+      linguisticValidation: "valide"
+    },
+    {
+      _id: "t-2",
+      _type: "ditammariTerm",
+      term: "Batammariba",
+      slug: { current: "batammariba" },
+      frenchTranslation: "Les vrais bâtisseurs de la terre",
+      definition: "Autodésignation du peuple Otammari, soulignant leur lien ontologique avec le modelage de la terre et la dignité humaine.",
+      linguisticValidation: "valide"
+    },
+    {
+      _id: "t-3",
+      _type: "ditammariTerm",
+      term: "Difwani",
+      slug: { current: "difwani" },
+      frenchTranslation: "Grande initiation masculine",
+      definition: "Cycle initiatique fondamental marquant l'intégration des jeunes hommes dans la communauté et la transmission des secrets coutumiers.",
+      linguisticValidation: "valide"
+    },
+    {
+      _id: "t-4",
+      _type: "ditammariTerm",
+      term: "Dikuntri",
+      slug: { current: "dikuntri" },
+      frenchTranslation: "Grande fête initiatique des jeunes filles",
+      definition: "Cérémonie rituelle féminine célébrant le passage à la maturité, l'honneur des lignées et la fécondité.",
+      linguisticValidation: "valide"
+    }
+  ];
+}
+
+if (!sources || sources.length === 0) {
+  sources = [
+    {
+      _id: "s-1",
+      _type: "source",
+      title: "Recherches archéologiques sur l'histoire du peuplement dans l'Atakora",
+      slug: { current: "recherches-archeologiques-atakora-ndah" },
+      author: "Didier N'Dah",
+      sourceType: "these",
+      year: 2014,
+      publisher: "Université d'Abomey-Calavi",
+      annotation: "Ouvrage de référence sur les occupations humaines anciennes du nord du Bénin."
+    },
+    {
+      _id: "s-2",
+      _type: "source",
+      title: "Atakora : Otammari, peuples chasseurs et bâtisseurs de la falaise",
+      slug: { current: "atakora-otammari-maurice-1986" },
+      author: "Albert Marie Maurice",
+      sourceType: "livre",
+      year: 1986,
+      publisher: "Karthala, Paris",
+      annotation: "Étude ethnographique et architecturale majeure."
+    }
+  ];
+}
+---
+
+<Layout
+  title="Bibliothèque Documentaire du Kotamagou"
+  description="Consultez les archives vivantes du Kotamagou : dossiers thématiques, personnalités ressources, répertoires claniques, toponymie et lexique Ditammari."
+>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <header class="border-b border-border pb-8 mb-12">
+      <span class="inline-block text-xs uppercase tracking-widest font-sans font-bold text-ocre mb-2">
+        Pilier B — Fonds documentaire & Archives
+      </span>
+      <h1 class="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-charbon leading-tight">
+        La Bibliothèque du Kotamagou
+      </h1>
+      <p class="mt-4 font-serif text-lg text-charbon/80 max-w-3xl leading-relaxed">
+        Une base de connaissances structurée, vérifiée et contextualisée pour servir de référence aux communautés, chercheurs, enseignants et étudiants.
+      </p>
+
+      <!-- Navigation d'accès rapide -->
+      <nav class="mt-6 flex flex-wrap gap-2 text-xs font-sans" aria-label="Index des ressources">
+        <a href="#dossiers" class="px-3 py-1.5 bg-kaolin border border-border text-charbon hover:border-ocre transition">Dossiers ({articles.length})</a>
+        <a href="#audiovisuel" class="px-3 py-1.5 bg-kaolin border border-border text-charbon hover:border-ocre transition">Fonds Audiovisuel ({videos.length})</a>
+        <a href="#personnalites" class="px-3 py-1.5 bg-kaolin border border-border text-charbon hover:border-ocre transition">Personnes Ressources ({persons.length})</a>
+        <a href="#territoires" class="px-3 py-1.5 bg-kaolin border border-border text-charbon hover:border-ocre transition">Territoires ({territories.length})</a>
+        <a href="#clans" class="px-3 py-1.5 bg-kaolin border border-border text-charbon hover:border-ocre transition">Clans ({clans.length})</a>
+        <a href="#lexique" class="px-3 py-1.5 bg-kaolin border border-border text-charbon hover:border-ocre transition">Lexique Ditammari ({terms.length})</a>
+        <a href="#sources" class="px-3 py-1.5 bg-kaolin border border-border text-charbon hover:border-ocre transition">Sources écrites ({sources.length})</a>
+      </nav>
+    </header>
+
+    <!-- 1. Dossiers de fond -->
+    <section id="dossiers" class="mb-16 scroll-mt-24">
+      <div class="flex items-baseline justify-between border-b border-border pb-3 mb-6">
+        <div>
+          <span class="text-xs uppercase tracking-widest font-sans font-bold text-ocre">Études & Écrits</span>
+          <h2 class="font-serif text-2xl font-bold text-charbon mt-1">Dossiers documentaires</h2>
+        </div>
+        <span class="text-xs font-mono text-charbon/60">{articles.length} dossiers</span>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {articles.map(article => (
+          <ArticleCard article={article} />
+        ))}
+      </div>
+    </section>
+
+    <!-- 2. Fonds audiovisuel documenté -->
+    <section id="audiovisuel" class="mb-16 scroll-mt-24">
+      <div class="flex items-baseline justify-between border-b border-border pb-3 mb-6">
+        <div>
+          <span class="text-xs uppercase tracking-widest font-sans font-bold text-vert">Mémoire Audiovisuelle</span>
+          <h2 class="font-serif text-2xl font-bold text-charbon mt-1">Archives vidéo indexées</h2>
+        </div>
+        <a href="/interviews" class="text-xs font-sans text-ocre hover:underline">Voir les entretiens &rarr;</a>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {videos.map(video => (
+          <div class="border border-border p-4 bg-kaolin">
+            <YouTubeFacade
+              videoId={video.youtubeId}
+              title={video.title}
+              duration={video.duration}
+            />
+            <h3 class="font-serif font-bold text-charbon text-lg mt-4 mb-2">{video.title}</h3>
+            {video.summary && (
+              <p class="font-sans text-xs text-charbon/75 leading-relaxed">{video.summary}</p>
+            )}
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- 3. Personnes ressources & Chercheurs -->
+    <section id="personnalites" class="mb-16 scroll-mt-24">
+      <div class="flex items-baseline justify-between border-b border-border pb-3 mb-6">
+        <div>
+          <span class="text-xs uppercase tracking-widest font-sans font-bold text-charbon/70">Acteurs & Témoins</span>
+          <h2 class="font-serif text-2xl font-bold text-charbon mt-1">Personnes ressources et chercheurs</h2>
+        </div>
+        <span class="text-xs font-mono text-charbon/60">{persons.length} notices</span>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {persons.map(person => (
+          <DocumentaryCard
+            type="personne"
+            title={person.name}
+            subtitle={person.role}
+            description={person.bio}
+          />
+        ))}
+      </div>
+    </section>
+
+    <!-- 4. Territoires & Localités -->
+    <section id="territoires" class="mb-16 scroll-mt-24">
+      <div class="flex items-baseline justify-between border-b border-border pb-3 mb-6">
+        <div>
+          <span class="text-xs uppercase tracking-widest font-sans font-bold text-vert">Géographie du Kotamagou</span>
+          <h2 class="font-serif text-2xl font-bold text-charbon mt-1">Territoires et sites remarquables</h2>
+        </div>
+        <span class="text-xs font-mono text-charbon/60">{territories.length} localités</span>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {territories.map(t => (
+          <DocumentaryCard
+            type="territoire"
+            title={t.name}
+            subtitle={`${t.administrativeRegion} • ${t.country}`}
+            description={t.description}
+            badge={t.isUnescoSite ? "Site UNESCO Transfrontalier" : undefined}
+          />
+        ))}
+      </div>
+    </section>
+
+    <!-- 5. Clans et Lignées -->
+    <section id="clans" class="mb-16 scroll-mt-24">
+      <div class="flex items-baseline justify-between border-b border-border pb-3 mb-6">
+        <div>
+          <span class="text-xs uppercase tracking-widest font-sans font-bold text-ocre">Organisation Sociale</span>
+          <h2 class="font-serif text-2xl font-bold text-charbon mt-1">Répertoire clanique</h2>
+        </div>
+        <span class="text-xs font-mono text-charbon/60">{clans.length} clans répertoriés</span>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {clans.map(clan => (
+          <DocumentaryCard
+            type="clan"
+            title={`Clan ${clan.name}`}
+            subtitle={clan.oralSource ? `Source : ${clan.oralSource}` : undefined}
+            description={clan.originStory}
+            badge={clan.validatedByElders ? "Validé" : undefined}
+          />
+        ))}
+      </div>
+    </section>
+
+    <!-- 6. Lexique Ditammari -->
+    <section id="lexique" class="mb-16 scroll-mt-24">
+      <div class="flex items-baseline justify-between border-b border-border pb-3 mb-6">
+        <div>
+          <span class="text-xs uppercase tracking-widest font-sans font-bold text-vert">Langue & Terminologie</span>
+          <h2 class="font-serif text-2xl font-bold text-charbon mt-1">Glossaire Ditammari</h2>
+        </div>
+        <span class="text-xs font-mono text-charbon/60">{terms.length} termes documentés</span>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {terms.map(term => (
+          <div class="bg-kaolin border border-border p-4 rounded-sm">
+            <span class="font-serif font-bold text-base text-charbon block">{term.term}</span>
+            <span class="font-sans text-xs text-ocre font-medium block mt-1">{term.frenchTranslation}</span>
+            <p class="font-sans text-xs text-charbon/75 mt-2 line-clamp-3">{term.definition}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- 7. Sources écrites -->
+    <section id="sources" class="scroll-mt-24 border-t border-border pt-12">
+      <div class="flex items-baseline justify-between mb-6">
+        <div>
+          <span class="text-xs uppercase tracking-widest font-sans font-bold text-charbon/70">Bibliographie scientifique</span>
+          <h2 class="font-serif text-2xl font-bold text-charbon mt-1">Sources écrites et publications académiques</h2>
+        </div>
+        <span class="text-xs font-mono text-charbon/60">{sources.length} références</span>
+      </div>
+      <div class="space-y-3">
+        {sources.map(src => (
+          <div class="bg-sable/30 border border-border p-4 rounded-sm flex flex-col sm:flex-row sm:items-baseline justify-between gap-2">
+            <div>
+              <span class="font-serif font-bold text-charbon">{src.title}</span>
+              <span class="text-xs font-sans text-charbon/70 block sm:inline sm:ml-2">
+                — {src.author} ({src.year}) • {src.publisher}
+              </span>
+            </div>
+            <span class="text-xs font-mono uppercase bg-kaolin border border-border px-2 py-0.5 self-start text-charbon/80">
+              {src.sourceType}
+            </span>
+          </div>
+        ))}
+      </div>
+    </section>
+  </div>
+</Layout>

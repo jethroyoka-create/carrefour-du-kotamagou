@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
+  <rect width="32" height="32" rx="4" fill="#8C3B22"/>
+  <!-- Silhouette stylisée Takienta / Tourelle en terre -->
+  <path d="M7 26V15L10 11L13 15V26H7Z" fill="#FAF8F4" fill-opacity="0.95"/>
+  <path d="M19 26V13L22 9L25 13V26H19Z" fill="#FAF8F4" fill-opacity="0.95"/>
+  <path d="M12 26V18H20V26H12Z" fill="#FAF8F4" fill-opacity="0.9"/>
+  <!-- Porte traditionnelle basse -->
+  <path d="M14 26V21H18V26H14Z" fill="#161412"/>
+  <!-- Toit de paille conique chapeau -->
+  <polygon points="10,11 7,15 13,15" fill="#EFECE6"/>
+  <polygon points="22,9 19,13 25,13" fill="#EFECE6"/>
+</svg>

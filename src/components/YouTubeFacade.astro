@@ -1,0 +1,92 @@
+---
+export interface Props {
+  youtubeId?: string;
+  videoId?: string;
+  title: string;
+  duration?: string;
+  class?: string;
+}
+
+const { youtubeId: propYoutubeId, videoId, title, duration, class: className = '' } = Astro.props;
+const youtubeId = propYoutubeId || videoId || '';
+
+// Vignette officielle YouTube en haute qualité
+const thumbnailUrl = `https://i.ytimg.com/vi/${youtubeId}/hqdefault.jpg`;
+---
+
+<div
+  class={`relative aspect-video w-full overflow-hidden bg-charbon rounded-sm shadow-md group ${className}`}
+  data-youtube-facade
+  data-youtube-id={youtubeId}
+  data-youtube-title={title}
+>
+  <!-- Vignette statique légère -->
+  <img
+    src={thumbnailUrl}
+    alt={`Aperçu de la vidéo : ${title}`}
+    loading="lazy"
+    decoding="async"
+    class="w-full h-full object-cover opacity-90 group-hover:opacity-100 group-hover:scale-102 transition-all duration-300"
+  />
+
+  <!-- Voile d'ambiance et bouton de lecture -->
+  <div class="absolute inset-0 bg-charbon/30 group-hover:bg-charbon/10 transition-colors flex items-center justify-center">
+    <button
+      type="button"
+      class="youtube-play-btn inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-ocre text-white shadow-xl group-hover:scale-110 group-hover:bg-ocre-dark transition-all duration-200 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-white"
+      aria-label={`Lancer la lecture de la vidéo : ${title}`}
+    >
+      <svg class="w-8 h-8 sm:w-10 sm:h-10 ml-1" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M8 5v14l11-7z" />
+      </svg>
+    </button>
+  </div>
+
+  <!-- Badge de durée en bas à droite -->
+  {duration && (
+    <div class="absolute bottom-3 right-3 px-2 py-1 bg-charbon/80 backdrop-blur-sm text-kaolin text-xs font-ui font-semibold rounded">
+      {duration}
+    </div>
+  )}
+
+  <!-- Conteneur pour l'iframe (injectée uniquement au clic) -->
+  <div class="youtube-player-container absolute inset-0 hidden"></div>
+</div>
+
+<script>
+  // Script léger de chargement différé à la demande
+  function initYouTubeFacades() {
+    const facades = document.querySelectorAll<HTMLElement>('[data-youtube-facade]');
+    facades.forEach((facade) => {
+      const button = facade.querySelector('.youtube-play-btn');
+      const container = facade.querySelector('.youtube-player-container');
+      const youtubeId = facade.getAttribute('data-youtube-id');
+      const title = facade.getAttribute('data-youtube-title') || 'Vidéo YouTube';
+
+      if (!button || !container || !youtubeId) return;
+
+      const loadIframe = () => {
+        container.classList.remove('hidden');
+        container.innerHTML = `
+          <iframe
+            src="https://www.youtube-nocookie.com/embed/${encodeURIComponent(youtubeId)}?autoplay=1&rel=0&modestbranding=1"
+            title="${title.replace(/"/g, '&quot;')}"
+            class="w-full h-full border-0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen
+          ></iframe>
+        `;
+        button.remove();
+      };
+
+      button.addEventListener('click', loadIframe, { once: true });
+    });
+  }
+
+  // Initialisation au chargement de la page
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initYouTubeFacades);
+  } else {
+    initYouTubeFacades();
+  }
+</script>

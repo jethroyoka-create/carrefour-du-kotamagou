@@ -1,0 +1,160 @@
+---
+import Layout from '@/layouts/Layout.astro';
+---
+
+<Layout
+  title="Contact & Contributions — Carrefour du Kotamagou"
+  description="Contactez la rédaction de Carrefour du Kotamagou. Proposez un témoignage, une archive, une correction linguistique ou un sujet de reportage."
+>
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <header class="border-b border-border pb-8 mb-10">
+      <span class="inline-block text-xs uppercase tracking-widest font-sans font-bold text-ocre mb-2">
+        Dialogue & Contributions
+      </span>
+      <h1 class="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-charbon leading-tight">
+        Contacter la Rédaction
+      </h1>
+      <p class="mt-4 font-serif text-lg text-charbon/80 leading-relaxed">
+        Vous êtes chercheur, témoin, membre de la communauté, enseignant ou journaliste ? Nous sommes à votre écoute pour enrichir et vérifier les mémoires du Kotamagou.
+      </p>
+    </header>
+
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-10">
+      <!-- Formulaire de contact / contribution -->
+      <div class="md:col-span-7">
+        <h2 class="font-serif font-bold text-xl text-charbon mb-4">Envoyer un message ou proposer un document</h2>
+        <form
+          action="mailto:contact@carrefourdukotamagou.org"
+          method="post"
+          enctype="text/plain"
+          class="space-y-4 font-sans text-sm"
+        >
+          <div>
+            <label for="name" class="block text-xs font-bold uppercase tracking-wider text-charbon mb-1">
+              Nom complet ou Institution <span class="text-ocre">*</span>
+            </label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              required
+              class="w-full px-3 py-2 border border-border rounded-sm bg-kaolin focus:outline-none focus:ring-2 focus:ring-ocre text-charbon text-sm"
+              placeholder="Ex : Kossi / Dossou / Université d'Abomey-Calavi"
+            />
+          </div>
+
+          <div>
+            <label for="email" class="block text-xs font-bold uppercase tracking-wider text-charbon mb-1">
+              Adresse e-mail <span class="text-ocre">*</span>
+            </label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              required
+              class="w-full px-3 py-2 border border-border rounded-sm bg-kaolin focus:outline-none focus:ring-2 focus:ring-ocre text-charbon text-sm"
+              placeholder="votre-adresse@domaine.com"
+            />
+          </div>
+
+          <div>
+            <label for="subject" class="block text-xs font-bold uppercase tracking-wider text-charbon mb-1">
+              Objet de la demande <span class="text-ocre">*</span>
+            </label>
+            <select
+              id="subject"
+              name="subject"
+              class="w-full px-3 py-2 border border-border rounded-sm bg-kaolin focus:outline-none focus:ring-2 focus:ring-ocre text-charbon text-sm"
+            >
+              <option value="proposition-sujet">Proposition de sujet ou reportage</option>
+              <option value="contribution-documentaire">Contribution documentaire / Archive / Témoignage</option>
+              <option value="rectification-linguistique">Précision toponymique ou linguistique (Ditammari)</option>
+              <option value="collaboration-scientifique">Recherche scientifique & Partenariat</option>
+              <option value="autre">Autre question</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="message" class="block text-xs font-bold uppercase tracking-wider text-charbon mb-1">
+              Message ou description de votre contribution <span class="text-ocre">*</span>
+            </label>
+            <textarea
+              id="message"
+              name="message"
+              rows="6"
+              required
+              class="w-full px-3 py-2 border border-border rounded-sm bg-kaolin focus:outline-none focus:ring-2 focus:ring-ocre text-charbon text-sm"
+              placeholder="Détaillez votre message, les références du document ou les faits..."
+            ></textarea>
+          </div>
+
+          <div class="text-xs text-charbon/70 leading-relaxed">
+            <p>
+              🔒 <strong>Confidentialité garantie :</strong> Les coordonnées privées des témoins, chercheurs et contributeurs ne sont jamais enregistrées dans des bases publiques ni divulguées à des tiers.
+            </p>
+          </div>
+
+          <button
+            type="submit"
+            class="px-6 py-3 bg-ocre text-kaolin font-sans font-bold text-xs uppercase tracking-wider rounded-sm hover:bg-ocre/90 transition shadow-sm"
+          >
+            Transmettre le message
+          </button>
+        </form>
+      </div>
+
+      <!-- Coordonnées et réseaux -->
+      <div class="md:col-span-5 space-y-8">
+        <div class="bg-sable/30 border border-border p-6 rounded-sm">
+          <h3 class="font-serif font-bold text-lg text-charbon mb-3">Rédaction & Correspondance</h3>
+          <p class="font-sans text-xs text-charbon/80 leading-relaxed mb-4">
+            Plateforme transfrontalière opérant sur les zones de Boukoumbé, Natitingou (Bénin) et Nadoba (Togo).
+          </p>
+          <div class="space-y-2 text-xs font-sans text-charbon/85">
+            <p><strong>Courriel de la rédaction :</strong><br /><a href="mailto:contact@carrefourdukotamagou.org" class="text-ocre hover:underline">contact@carrefourdukotamagou.org</a></p>
+            <p><strong>Disponibilité :</strong> Du lundi au vendredi, 8h00 - 18h00 (GMT+1)</p>
+          </div>
+        </div>
+
+        <div class="bg-kaolin border border-border p-6 rounded-sm">
+          <h3 class="font-serif font-bold text-lg text-charbon mb-3">Canaux officiels</h3>
+          <ul class="space-y-3 text-xs font-sans">
+            <li>
+              <a
+                href="https://youtube.com/@carrefourdukoutammakou-lz3cq?si=kPavwIr4zovoEeoL"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="flex items-center text-charbon hover:text-ocre transition"
+              >
+                <span class="w-6 h-6 rounded-full bg-red-600 text-white flex items-center justify-center font-bold mr-2 text-[10px]">YT</span>
+                <span><strong>YouTube :</strong> Carrefour du Koutammakou</span>
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://www.facebook.com/share/18fE9SxRk3/?mibextid=wwXIfr"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="flex items-center text-charbon hover:text-ocre transition"
+              >
+                <span class="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold mr-2 text-[10px]">FB</span>
+                <span><strong>Facebook :</strong> Carrefour du Kotamagou</span>
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://www.tiktok.com/@carrefour.du.kout?_r=1&_t=ZS-9BLOnwiG873"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="flex items-center text-charbon hover:text-ocre transition"
+              >
+                <span class="w-6 h-6 rounded-full bg-black text-white flex items-center justify-center font-bold mr-2 text-[10px]">TK</span>
+                <span><strong>TikTok :</strong> @carrefour.du.kout</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>

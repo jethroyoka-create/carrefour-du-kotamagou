@@ -1,0 +1,82 @@
+---
+export interface Props {
+  title: string;
+  subtitle?: string;
+  tag?: string;
+  tagType?: 'ocre' | 'vert' | 'charbon';
+  description?: string;
+  href?: string;
+  badge?: string;
+  icon?: string;
+  type?: string;
+}
+
+const {
+  title,
+  subtitle,
+  tag,
+  tagType = 'ocre',
+  description,
+  href,
+  badge,
+  icon,
+  type,
+} = Astro.props;
+
+const displayTag = tag || (type ? type.toUpperCase() : undefined);
+
+const tagClasses = {
+  ocre: 'bg-ocre-soft text-ocre',
+  vert: 'bg-vert-soft text-vert',
+  charbon: 'bg-sable text-charbon',
+};
+---
+
+<div class="bg-white border border-sable-dark p-6 hover:border-ocre transition-all duration-200 flex flex-col justify-between group rounded-sm">
+  <div>
+    <div class="flex items-start justify-between gap-3 mb-3">
+      {displayTag && (
+        <span class={`font-ui text-xs font-semibold uppercase tracking-wider px-2 py-0.5 rounded-sm ${tagClasses[tagType]}`}>
+          {displayTag}
+        </span>
+      )}
+      {badge && (
+        <span class="font-ui text-xs text-charbon-muted font-medium">
+          {badge}
+        </span>
+      )}
+    </div>
+
+    <h3 class="font-heading text-xl font-bold text-charbon group-hover:text-ocre transition-colors mb-1.5 leading-snug">
+      {href ? (
+        <a href={href} class="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ocre">
+          {icon && <span class="mr-1.5" aria-hidden="true">{icon}</span>}
+          {title}
+        </a>
+      ) : (
+        <span>
+          {icon && <span class="mr-1.5" aria-hidden="true">{icon}</span>}
+          {title}
+        </span>
+      )}
+    </h3>
+
+    {subtitle && (
+      <p class="font-ui text-xs font-medium text-charbon-muted italic mb-3">
+        {subtitle}
+      </p>
+    )}
+
+    {description && (
+      <p class="font-body text-charbon-muted text-sm leading-relaxed line-clamp-3">
+        {description}
+      </p>
+    )}
+  </div>
+
+  {href && (
+    <div class="pt-4 mt-4 border-t border-sable flex items-center justify-between text-xs font-ui font-semibold text-ocre">
+      <span>Consulter la notice &rarr;</span>
+    </div>
+  )}
+</div>

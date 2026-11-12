@@ -1,0 +1,133 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import YouTubeFacade from '@/components/YouTubeFacade.astro';
+import { client } from '@/lib/sanity/client';
+import { videosQuery } from '@/lib/sanity/queries';
+import type { Video } from '@/lib/sanity/types';
+
+let videos: Video[] = [];
+try {
+  videos = await client.fetch(videosQuery);
+} catch (e) {
+  // Mode résilient
+}
+
+const verifiedInterviews = [
+  {
+    title: 'Origine des batammariba. Entretien avec l\'historien Noël Koumba KOUSSEY',
+    speaker: 'Noël Koumba Koussey',
+    role: 'Historien, Enseignant-chercheur',
+    duration: '22:17',
+    youtubeId: 'pq-pTTrLmes',
+    theme: 'Histoire & Origines',
+    summary: 'Analyse historiographique des origines, de la mémoire clanique et des récits d\'implantation dans l\'Atacora.',
+  },
+  {
+    title: 'Les grands mouvements de migrations des batammariba — Avec l\'Archéologue Didier N\'DAH',
+    speaker: 'Pr Didier N\'Dah',
+    role: 'Professeur titulaire d\'Archéologie (UAC)',
+    duration: '14:35',
+    youtubeId: 'UMBuzQpXlAI',
+    theme: 'Archéologie & Migrations',
+    summary: 'Éclairage archéologique sur les vagues de migrations et l\'adaptation des Batammariba à l\'environnement montagneux.',
+  },
+  {
+    title: '« L\'Atacora était peuplé déjà au 3è siècle d\'après mes fouilles archéologiques »',
+    speaker: 'Dr Gérard K. Tidouo',
+    role: 'Docteur en Archéologie',
+    duration: '37:11',
+    youtubeId: 'nb62kCbckiw',
+    theme: 'Peuplement ancien',
+    summary: 'Synthèse des fouilles scientifiques attestant la profondeur historique du peuplement de l\'Atacora dès l\'Antiquité.',
+  },
+  {
+    title: 'Entretien avec Roger T. M\'PO sur le site Koutammakou du Togo, patrimoine de l\'UNESCO',
+    speaker: 'Roger Tanti M\'Po',
+    role: 'Gestionnaire du patrimoine (Togo)',
+    duration: '26:30',
+    youtubeId: 'dVtnj0lyeEA',
+    theme: 'Patrimoine Togo & UNESCO',
+    summary: 'Présentation du versant togolais du Koutammakou, de la gouvernance locale et des enjeux de transmission transfrontalière.',
+  },
+  {
+    title: 'Entretien sur l\'identité Tammari avec le sociologue Rigobert Kpanipa KOUAGOU',
+    speaker: 'Dr Rigobert Kpanipa Kouagou',
+    role: 'Sociologue, Chercheur',
+    duration: '19:15',
+    youtubeId: 'uJtxUvQi9oA',
+    theme: 'Sociologie & Identité',
+    summary: 'Définition sociologique de l\'identité Otammari, des systèmes de parenté et des valeurs fondamentales de solidarité.',
+  },
+  {
+    title: 'La femme Otammari dans la société d\'hier à aujourd\'hui — Philomène GNAMOU',
+    speaker: 'Philomène Gnamou épse Sansouamou',
+    role: 'Personne ressource & Actrice communautaire',
+    duration: '33:55',
+    youtubeId: 'ZVQ3Y-M0ae0',
+    theme: 'Place des femmes & Société',
+    summary: 'Témoignage d\'autorité sur le rôle économique, éducatif et rituel des femmes dans l\'organisation sociale Batammariba.',
+  },
+];
+
+const allInterviews = [
+  ...verifiedInterviews,
+  ...(videos || []).map((v) => ({
+    title: v.title,
+    speaker: v.speakers?.[0]?.name || 'Personne ressource',
+    role: v.speakers?.[0]?.role || 'Témoin / Chercheur',
+    duration: v.duration || '20:00',
+    youtubeId: v.youtubeId,
+    theme: v.category?.title || 'Entretien',
+    summary: v.summary,
+  })),
+];
+---
+
+<Layout
+  title="Interviews & Portraits"
+  description="Entretiens approfondis avec les chercheurs, historiens et personnes ressources du Koutammakou."
+>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <header class="max-w-3xl mb-12 pb-6 border-b border-sable-dark">
+      <span class="badge-category mb-3">Paroles d'autorité & Mémoire</span>
+      <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-charbon mb-4">
+        Interviews & Portraits
+      </h1>
+      <p class="font-body text-lg text-charbon-muted leading-relaxed m-0">
+        Les entretiens menés par Carrefour du Kotamagou réunissent historiens, archéologues, sociologues, chefs coutumiers et témoins locaux pour éclairer la culture Batammariba avec rigueur.
+      </p>
+    </header>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {allInterviews.map((item) => (
+        <article class="bg-white border border-sable-dark p-6 rounded-sm flex flex-col justify-between shadow-xs">
+          <div>
+            <YouTubeFacade
+              youtubeId={item.youtubeId}
+              title={item.title}
+              duration={item.duration}
+              class="mb-4"
+            />
+            <div class="flex items-center justify-between text-xs font-ui mb-2">
+              <span class="badge-category">{item.theme}</span>
+              <span class="text-charbon-muted font-semibold">{item.duration}</span>
+            </div>
+            <h2 class="font-heading font-bold text-xl text-charbon mb-1.5 leading-snug">
+              {item.title}
+            </h2>
+            <p class="font-ui text-xs font-semibold text-ocre mb-3">
+              Avec {item.speaker} — <span class="font-normal text-charbon-muted">{item.role}</span>
+            </p>
+            <p class="font-body text-xs text-charbon-muted leading-relaxed line-clamp-3 mb-4">
+              {item.summary}
+            </p>
+          </div>
+          <div class="pt-3 border-t border-sable flex justify-between items-center text-xs font-ui text-charbon-muted">
+            <span>Intervenant vérifié</span>
+            <span class="text-ocre font-semibold">Regarder en façade</span>
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</Layout>

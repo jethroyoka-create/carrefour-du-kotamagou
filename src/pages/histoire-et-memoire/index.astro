@@ -1,0 +1,247 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import DocumentaryCard from '@/components/DocumentaryCard.astro';
+import ArticleCard from '@/components/ArticleCard.astro';
+import { sanityClient } from '@/lib/sanity/client';
+import { articlesQuery, clansQuery, territoriesQuery, sourcesQuery } from '@/lib/sanity/queries';
+import type { Article, Clan, Territory, Source } from '@/lib/sanity/types';
+
+let articles: Article[] = [];
+let clans: Clan[] = [];
+let territories: Territory[] = [];
+let sources: Source[] = [];
+
+try {
+  articles = await sanityClient.fetch(articlesQuery);
+  clans = await sanityClient.fetch(clansQuery);
+  territories = await sanityClient.fetch(territoriesQuery);
+  sources = await sanityClient.fetch(sourcesQuery);
+} catch (e) {
+  console.warn("Utilisation des données de secours pour Histoire & Mémoire");
+}
+
+if (!articles || articles.length === 0) {
+  articles = [
+    {
+      _id: "art-hist-1",
+      _type: "article",
+      title: "Origines et trajectoires migratoires des Batammariba dans la chaîne de l'Atakora",
+      slug: { current: "origines-trajectoires-migratoires-batammariba" },
+      articleType: "dossier",
+      excerpt: "Synthèse des travaux archéologiques et des traditions orales sur le peuplement du Kotamagou entre le Bénin et le Togo actuels.",
+      publishedAt: "2026-03-01T10:00:00Z",
+      author: "Pr Didier N'Dah & Équipe éditoriale",
+      editorialStatus: "publie",
+      culturalValidation: {
+        sensitivityLevel: "standard",
+        culturalValidated: true,
+        rightsVerified: true,
+      },
+      category: {
+        _id: "cat-histoire",
+        title: "Histoire & Mémoire",
+        slug: { current: "histoire-et-memoire" },
+        pillar: "documentation"
+      }
+    }
+  ];
+}
+
+if (!clans || clans.length === 0) {
+  clans = [
+    {
+      _id: "clan-banadoba",
+      _type: "clan",
+      name: "Banadoba",
+      slug: { current: "banadoba" },
+      originStory: "L'un des clans fondateurs historiques de la région de Nadoba, gardien de mémoires rituelles et de sites sacrés.",
+      oralSource: "Récits recueillis auprès des doyens de Nadoba",
+      validatedByElders: true
+    },
+    {
+      _id: "clan-bessoribe",
+      _type: "clan",
+      name: "Bèssoribè",
+      slug: { current: "bessoribe" },
+      originStory: "Lignée liée aux maîtres de la forge et aux savoir-faire techniques de construction des Sikien.",
+      oralSource: "Traditions orales de Koussoucoing et Boukoumbé",
+      validatedByElders: true
+    },
+    {
+      _id: "clan-ossori",
+      _type: "clan",
+      name: "Ossori",
+      slug: { current: "ossori" },
+      originStory: "Lignée ancienne associée à la gestion rituelle de la terre et à la protection des frontières naturelles de l'Atakora.",
+      oralSource: "Patriarches de Natitingou et Boukoumbé",
+      validatedByElders: true
+    }
+  ];
+}
+
+if (!territories || territories.length === 0) {
+  territories = [
+    {
+      _id: "ter-koutammakou-togo",
+      _type: "territory",
+      name: "Koutammakou (Secteur Togo / Nadoba)",
+      slug: { current: "koutammakou-togo" },
+      country: "togo",
+      administrativeRegion: "Région de la Kara, Préfecture de Kéran",
+      isUnescoSite: true,
+      description: "Classé au Patrimoine Mondial de l'UNESCO dès 2004 comme paysage culturel vivant exemplaire."
+    },
+    {
+      _id: "ter-koutammakou-benin",
+      _type: "territory",
+      name: "Koutammakou (Secteur Bénin / Boukoumbé)",
+      slug: { current: "koutammakou-benin" },
+      country: "benin",
+      administrativeRegion: "Département de l'Atacora, Boukoumbé & Natitingou",
+      isUnescoSite: true,
+      description: "Extension officielle au Patrimoine Mondial de l'UNESCO en septembre 2023, scellant l'unité transfrontalière du site."
+    }
+  ];
+}
+
+if (!sources || sources.length === 0) {
+  sources = [
+    {
+      _id: "src-ndah-2014",
+      _type: "source",
+      title: "Recherches archéologiques sur l'histoire du peuplement dans l'Atakora",
+      slug: { current: "recherches-archeologiques-atakora-ndah" },
+      author: "Didier N'Dah",
+      sourceType: "these",
+      year: 2014,
+      publisher: "Université d'Abomey-Calavi / Presses Universitaires",
+      annotation: "Ouvrage de référence sur les occupations humaines anciennes, les abris sous roche et l'habitat traditionnel."
+    },
+    {
+      _id: "src-maurice-1986",
+      _type: "source",
+      title: "Atakora : Otammari, peuples chasseurs et bâtisseurs de la falaise",
+      slug: { current: "atakora-otammari-maurice-1986" },
+      author: "Albert Marie Maurice",
+      sourceType: "livre",
+      year: 1986,
+      publisher: "Éditions Karthala, Paris",
+      annotation: "Étude ethnographique et architecturale majeure documentant les techniques constructives des Sikien."
+    }
+  ];
+}
+---
+
+<Layout
+  title="Histoire & Mémoire du Kotamagou"
+  description="Origines du peuple Otammari, fouilles archéologiques dans l'Atakora, lignées claniques (Banadoba, Bèssoribè, Ossori) et archives historiques."
+>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <header class="border-b border-border pb-8 mb-12">
+      <span class="inline-block text-xs uppercase tracking-widest font-sans font-bold text-ocre mb-2">
+        Archives, Récits & Recherche
+      </span>
+      <h1 class="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-charbon leading-tight">
+        Histoire & Mémoire du Kotamagou
+      </h1>
+      <p class="mt-4 font-serif text-lg text-charbon/80 max-w-3xl leading-relaxed">
+        Reconstituer la mémoire profonde des Batammariba à travers les travaux archéologiques, les sources bibliographiques rigoureuses et la parole vivante des dépositaires de lignées.
+      </p>
+    </header>
+
+    <!-- Chronologie & Contexte Transfrontalier -->
+    <section class="mb-16 bg-kaolin border border-border p-6 sm:p-8">
+      <span class="text-xs uppercase tracking-widest font-mono text-vert font-bold">Unité territoriale & UNESCO</span>
+      <h2 class="font-serif text-2xl font-bold text-charbon mt-2 mb-4">
+        Un paysage culturel transfrontalier indissociable
+      </h2>
+      <div class="prose max-w-none font-sans text-sm sm:text-base text-charbon/85 space-y-4">
+        <p>
+          Le Kotamagou constitue un ensemble culturel et paysager unique qui transcende la frontière politique tracée à l'époque coloniale entre le Bénin et le Togo. D'un côté comme de l'autre des falaises de l'Atakora, les Batammariba partagent la même langue (le Ditammari), la même conception cosmologique de l'habitat (la Sikien) et les mêmes systèmes de parenté clanique.
+        </p>
+        <p>
+          En 2004, la partie togolaise (Nadoba) a été inscrite sur la liste du Patrimoine Mondial de l'UNESCO. En septembre 2023, le comité de l'UNESCO a étendu cette reconnaissance à la partie béninoise (Boukoumbé et abords), rétablissant ainsi sur le plan institutionnel international l'intégrité globale de ce paysage habité.
+        </p>
+      </div>
+
+      <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+        {territories.map(t => (
+          <DocumentaryCard
+            type="territoire"
+            title={t.name}
+            subtitle={`${t.administrativeRegion} (${t.country})`}
+            description={t.description}
+            badge={t.isUnescoSite ? "Site UNESCO Transfrontalier" : undefined}
+          />
+        ))}
+      </div>
+    </section>
+
+    <!-- Dossiers d'Histoire -->
+    <section class="mb-16">
+      <h2 class="font-serif text-2xl font-bold text-charbon mb-6 pb-2 border-b border-border">
+        Dossiers historiques et archéologiques
+      </h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {articles.map(article => (
+          <ArticleCard article={article} />
+        ))}
+      </div>
+    </section>
+
+    <!-- Les Clans et Lignées Fondatrices -->
+    <section class="mb-16">
+      <div class="flex items-baseline justify-between border-b border-border pb-3 mb-6">
+        <div>
+          <span class="text-xs uppercase tracking-widest font-sans font-bold text-ocre">Généalogies & Alliances</span>
+          <h2 class="font-serif text-2xl font-bold text-charbon mt-1">Clans et lignées historiques</h2>
+        </div>
+        <a href="/bibliotheque#clans" class="text-xs font-sans text-ocre hover:underline">
+          Consulter le répertoire clanique &rarr;
+        </a>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {clans.map(clan => (
+          <DocumentaryCard
+            type="clan"
+            title={`Clan ${clan.name}`}
+            subtitle={clan.oralSource ? `Source : ${clan.oralSource}` : undefined}
+            description={clan.originStory}
+            badge={clan.validatedByElders ? "Validé par collège d'anciens" : "En cours de recueil"}
+          />
+        ))}
+      </div>
+    </section>
+
+    <!-- Sources bibliographiques de référence -->
+    <section class="border-t border-border pt-12">
+      <div class="flex items-baseline justify-between mb-6">
+        <div>
+          <span class="text-xs uppercase tracking-widest font-sans font-bold text-vert">Ressources Académiques</span>
+          <h2 class="font-serif text-2xl font-bold text-charbon mt-1">Sources écrites et bibliographie</h2>
+        </div>
+        <a href="/bibliotheque#sources" class="text-xs font-sans text-ocre hover:underline">
+          Toutes les sources &rarr;
+        </a>
+      </div>
+      <div class="space-y-4">
+        {sources.map(src => (
+          <div class="bg-sable/30 border border-border p-4 rounded-sm flex flex-col sm:flex-row sm:items-baseline justify-between gap-2">
+            <div>
+              <span class="font-serif font-bold text-charbon text-base">{src.title}</span>
+              <span class="text-xs font-sans text-charbon/70 block sm:inline sm:ml-2">
+                — {src.author} ({src.year}) • {src.publisher}
+              </span>
+              {src.annotation && (
+                <p class="font-serif text-xs text-charbon/70 mt-1 italic">{src.annotation}</p>
+              )}
+            </div>
+            <span class="text-xs font-mono uppercase bg-kaolin border border-border px-2 py-0.5 self-start text-charbon/80">
+              {src.sourceType}
+            </span>
+          </div>
+        ))}
+      </div>
+    </section>
+  </div>
+</Layout>
