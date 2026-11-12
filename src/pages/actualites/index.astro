@@ -3,6 +3,7 @@ import Layout from '@/layouts/Layout.astro';
 import ArticleCard from '@/components/ArticleCard.astro';
 import { client } from '@/lib/sanity/client';
 import { articlesQuery } from '@/lib/sanity/queries';
+import { fallbackArticles } from '@/lib/sanity/fallback';
 import type { Article } from '@/lib/sanity/types';
 
 let articles: Article[] = [];
@@ -12,80 +13,7 @@ try {
   // Mode hors ligne / résilience
 }
 
-const sampleArticles: Article[] = articles.length > 0 ? articles : [
-  {
-    _id: 'actu-1',
-    _type: 'article',
-    title: 'Koutammakou : L\'extension transfrontalière et les nouveaux défis de préservation',
-    slug: { current: 'koutammakou-extension-unesco-preservation' },
-    articleType: 'actualite',
-    excerpt: 'De la reconnaissance initiale au Togo en 2004 jusqu\'à l\'extension historique côté Bénin en 2023, retour approfondi sur vingt ans d\'efforts pour sauvegarder l\'architecture vivante des Takienta.',
-    publishedAt: '2026-11-12T10:00:00Z',
-    author: 'Rédaction Carrefour du Kotamagou',
-    editorialStatus: 'publie',
-    category: {
-      _id: 'cat-actualite',
-      _type: 'category',
-      title: 'Actualités',
-      slug: { current: 'actualites' },
-      pillar: 'media',
-    },
-    relatedTerritories: [
-      {
-        _id: 't-boukoumbe',
-        _type: 'territory',
-        name: 'Boukoumbé & Kéran',
-        slug: { current: 'boukoumbe' },
-        country: 'transfrontalier',
-      },
-    ],
-  },
-  {
-    _id: 'actu-2',
-    _type: 'article',
-    title: 'Filière fonio dans l\'Atacora : Entre résilience agricole et valorisation culinaire',
-    slug: { current: 'filiere-fonio-atacora-resilience-agricole' },
-    articleType: 'actualite',
-    excerpt: 'Céréale ancestrale du Koutammakou, le fonio constitue un pilier de la souveraineté alimentaire et des rites d\'hospitalité chez les Batammariba. Enquête sur les coopératives locales de Boukoumbé.',
-    publishedAt: '2026-11-05T14:30:00Z',
-    author: 'Rédaction Carrefour du Kotamagou',
-    editorialStatus: 'publie',
-    category: {
-      _id: 'cat-economie',
-      _type: 'category',
-      title: 'Économie & Terroir',
-      slug: { current: 'economie-et-terroir' },
-      pillar: 'media',
-    },
-    relatedTerritories: [
-      {
-        _id: 't-boukoumbe',
-        _type: 'territory',
-        name: 'Boukoumbé',
-        slug: { current: 'boukoumbe' },
-        country: 'benin',
-      },
-    ],
-  },
-  {
-    _id: 'actu-3',
-    _type: 'article',
-    title: 'Alphabétisation en Ditammari : Bilan des programmes scolaires et associatifs',
-    slug: { current: 'alphabetisation-ditammari-bilan-programmes' },
-    articleType: 'actualite',
-    excerpt: 'La Commission Nationale de Linguistique Ditammari (CNLD) et les acteurs locaux poursuivent l\'édition de manuels et la formation des maîtres pour ancrer la langue maternelle dès le primaire.',
-    publishedAt: '2026-10-28T09:15:00Z',
-    author: 'Rédaction Carrefour du Kotamagou',
-    editorialStatus: 'publie',
-    category: {
-      _id: 'cat-langue',
-      _type: 'category',
-      title: 'Langue & Éducation',
-      slug: { current: 'langue-et-education' },
-      pillar: 'media',
-    },
-  },
-];
+const sampleArticles: Article[] = articles.length > 0 ? articles : fallbackArticles;
 ---
 
 <Layout

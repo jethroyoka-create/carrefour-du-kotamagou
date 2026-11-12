@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://carrefour-du-kotamagou.pages.dev/sitemap.xml

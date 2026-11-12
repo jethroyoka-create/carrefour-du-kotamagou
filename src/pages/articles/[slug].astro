@@ -2,6 +2,7 @@
 import Layout from '@/layouts/Layout.astro';
 import { sanityClient } from '@/lib/sanity/client';
 import { articlesQuery } from '@/lib/sanity/queries';
+import { fallbackArticles } from '@/lib/sanity/fallback';
 import { urlForImage } from '@/lib/sanity/image';
 import type { Article } from '@/lib/sanity/types';
 
@@ -14,96 +15,7 @@ export async function getStaticPaths() {
   }
 
   if (!articles || articles.length === 0) {
-    articles = [
-      {
-        _id: "art-culture-1",
-        _type: "article",
-        title: "La Sikien (Takienta) : maison forte et sanctuaire cosmologique des Batammariba",
-        slug: { current: "sikien-takienta-architecture-cosmologique" },
-        articleType: "dossier",
-        excerpt: "Chaque tourelle, chaque niveau et chaque ouverture de la Sikien obéit à une symbolique précise reliant les vivants, les ancêtres et les forces tutélaires de la nature.",
-        publishedAt: "2026-03-10T10:00:00Z",
-        author: "Équipe Carrefour du Kotamagou",
-        editorialStatus: "publie",
-        culturalValidation: {
-          sensitivityLevel: "standard",
-          culturalValidated: true,
-          rightsVerified: true,
-        },
-        category: {
-          _id: "cat-culture",
-          title: "Culture & Traditions",
-          slug: { current: "culture-et-traditions" },
-          pillar: "documentation"
-        }
-      },
-      {
-        _id: "art-culture-2",
-        _type: "article",
-        title: "Difwani et Dikuntri : les grands rites initiatiques de transmission",
-        slug: { current: "difwani-dikuntri-rites-initiation" },
-        articleType: "dossier",
-        excerpt: "Le passage à l'âge adulte chez les Batammariba s'inscrit dans un cycle rigoureux d'épreuves physiques, d'apprentissage oral et de cohésion communautaire.",
-        publishedAt: "2026-02-15T09:00:00Z",
-        author: "Équipe Carrefour du Kotamagou",
-        editorialStatus: "publie",
-        culturalValidation: {
-          sensitivityLevel: "sensible",
-          culturalValidated: true,
-          rightsVerified: true,
-        },
-        category: {
-          _id: "cat-culture",
-          title: "Culture & Traditions",
-          slug: { current: "culture-et-traditions" },
-          pillar: "documentation"
-        }
-      },
-      {
-        _id: "art-hist-1",
-        _type: "article",
-        title: "Origines et trajectoires migratoires des Batammariba dans la chaîne de l'Atakora",
-        slug: { current: "origines-trajectoires-migratoires-batammariba" },
-        articleType: "dossier",
-        excerpt: "Synthèse des travaux archéologiques et des traditions orales sur le peuplement du Kotamagou entre le Bénin et le Togo actuels.",
-        publishedAt: "2026-03-01T10:00:00Z",
-        author: "Pr Didier N'Dah & Équipe éditoriale",
-        editorialStatus: "publie",
-        culturalValidation: {
-          sensitivityLevel: "standard",
-          culturalValidated: true,
-          rightsVerified: true,
-        },
-        category: {
-          _id: "cat-histoire",
-          title: "Histoire & Mémoire",
-          slug: { current: "histoire-et-memoire" },
-          pillar: "documentation"
-        }
-      },
-      {
-        _id: "art-actu-1",
-        _type: "article",
-        title: "Extension UNESCO du Koutammakou : Bilan et défis deux ans après la décision de Riyad",
-        slug: { current: "extension-unesco-koutammakou-bilan-et-defis" },
-        articleType: "enquete",
-        excerpt: "En septembre 2023, l'UNESCO consacrait l'intégrité transfrontalière du paysage culturel du Koutammakou en intégrant la partie béninoise. État des lieux sur le terrain.",
-        publishedAt: "2026-03-12T08:30:00Z",
-        author: "Rédaction Carrefour du Kotamagou",
-        editorialStatus: "publie",
-        culturalValidation: {
-          sensitivityLevel: "standard",
-          culturalValidated: true,
-          rightsVerified: true,
-        },
-        category: {
-          _id: "cat-actu",
-          title: "Actualités",
-          slug: { current: "actualites" },
-          pillar: "media"
-        }
-      }
-    ];
+    articles = fallbackArticles;
   }
 
   return articles.map((article) => ({
@@ -131,7 +43,7 @@ const imageUrl = imageBuilder ? imageBuilder.width(1200).height(675).url() : nul
 ---
 
 <Layout
-  title={`${article.title} — Carrefour du Kotamagou`}
+  title={article.title}
   description={article.excerpt || article.title}
   article={true}
   publishedTime={article.publishedAt}

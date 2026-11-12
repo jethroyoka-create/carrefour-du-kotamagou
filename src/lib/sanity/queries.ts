@@ -34,23 +34,76 @@ export const articlesQuery = `*[_type == "article" && editorialStatus == "publie
   publishedAt,
   author,
   editorialStatus,
-  culturalValidation,
+  "culturalValidation": {
+    "culturalValidated": culturalValidation.culturalValidated,
+    "sensitivityLevel": culturalValidation.sensitivityLevel
+  },
   category->{
     _id,
     title,
     slug,
     pillar
   },
-  relatedPersons[]->{
+  relatedPersons[]->[defined(_id)]{
     _id,
     name,
     role
   },
-  relatedTerritories[]->{
+  relatedTerritories[]->[defined(_id)]{
     _id,
     name,
     country
   }
+}`;
+
+export const articleBySlugQuery = `*[_type == "article" && slug.current == $slug && editorialStatus == "publie"][0]{
+  _id,
+  _type,
+  title,
+  slug,
+  articleType,
+  excerpt,
+  mainImage,
+  body,
+  publishedAt,
+  author,
+  editorialStatus,
+  "culturalValidation": {
+    "culturalValidated": culturalValidation.culturalValidated,
+    "sensitivityLevel": culturalValidation.sensitivityLevel
+  },
+  category->{
+    _id,
+    title,
+    slug,
+    pillar
+  },
+  relatedPersons[]->[defined(_id)]{
+    _id,
+    name,
+    role
+  },
+  relatedTerritories[]->[defined(_id)]{
+    _id,
+    name,
+    country
+  },
+  relatedClans[]->[defined(_id)]{
+    _id,
+    name
+  },
+  relatedDitammariTerms[]->[defined(_id)]{
+    _id,
+    term,
+    frenchTranslation
+  },
+  sources[]->[defined(_id)]{
+    _id,
+    title,
+    author,
+    year
+  },
+  seo
 }`;
 
 export const featuredArticleQuery = `*[_type == "article" && editorialStatus == "publie"] | order(publishedAt desc)[0]{
@@ -63,10 +116,15 @@ export const featuredArticleQuery = `*[_type == "article" && editorialStatus == 
   mainImage,
   publishedAt,
   author,
+  "culturalValidation": {
+    "culturalValidated": culturalValidation.culturalValidated,
+    "sensitivityLevel": culturalValidation.sensitivityLevel
+  },
   category->{
     _id,
     title,
-    slug
+    slug,
+    pillar
   }
 }`;
 
@@ -82,18 +140,22 @@ export const videosQuery = `*[_type == "video" && editorialStatus == "publie"] |
   summary,
   chapters,
   editorialStatus,
-  culturalValidation,
+  "culturalValidation": {
+    "culturalValidated": culturalValidation.culturalValidated,
+    "sensitivityLevel": culturalValidation.sensitivityLevel
+  },
   category->{
     _id,
     title,
-    slug
+    slug,
+    pillar
   },
-  speakers[]->{
+  speakers[]->[defined(_id)]{
     _id,
     name,
     role
   },
-  territories[]->{
+  territories[]->[defined(_id)]{
     _id,
     name,
     country
@@ -137,7 +199,7 @@ export const clansQuery = `*[_type == "clan"] | order(name asc){
   originStory,
   oralSource,
   validatedByElders,
-  territories[]->{
+  territories[]->[defined(_id)]{
     name,
     country
   }

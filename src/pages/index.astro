@@ -5,6 +5,7 @@ import YouTubeFacade from '@/components/YouTubeFacade.astro';
 import DocumentaryCard from '@/components/DocumentaryCard.astro';
 import { client } from '@/lib/sanity/client';
 import { articlesQuery, videosQuery } from '@/lib/sanity/queries';
+import { fallbackArticles, fallbackVideos } from '@/lib/sanity/fallback';
 import type { Article, Video } from '@/lib/sanity/types';
 
 // Récupération des données publiées depuis Sanity (avec fallback éditorial vérifié de Phase 0)
@@ -19,90 +20,8 @@ try {
 }
 
 // Contenus éditoriaux de référence (issus de l'inventaire vérifié de Phase 0)
-const featuredArticle: Article = articles[0] || {
-  _id: 'featured-default',
-  _type: 'article',
-  title: 'Koutammakou : L\'extension transfrontalière et les nouveaux défis de préservation',
-  slug: { current: 'koutammakou-extension-unesco-preservation' },
-  articleType: 'dossier',
-  excerpt: 'De la reconnaissance initiale au Togo en 2004 jusqu\'à l\'extension historique côté Bénin en 2023, retour approfondi sur vingt ans d\'efforts pour sauvegarder l\'architecture vivante des Takienta et le paysage culturel des Batammariba.',
-  publishedAt: '2026-11-12T10:00:00Z',
-  author: 'Rédaction Carrefour du Kotamagou',
-  editorialStatus: 'publie',
-  category: {
-    _id: 'cat-patrimoine',
-    _type: 'category',
-    title: 'Histoire & Mémoire',
-    slug: { current: 'histoire-et-memoire' },
-    pillar: 'documentation',
-  },
-  relatedTerritories: [
-    {
-      _id: 't-boukoumbe',
-      _type: 'territory',
-      name: 'Boukoumbé & Kéran',
-      slug: { current: 'boukoumbe' },
-      country: 'transfrontalier',
-    },
-  ],
-};
-
-const sampleVideos = videos.length > 0 ? videos.slice(0, 3) : [
-  {
-    _id: 'v-1',
-    _type: 'video',
-    title: 'Origine des batammariba. Entretien avec l\'historien Noël Koumba KOUSSEY',
-    slug: { current: 'origine-des-batammariba-koussey' },
-    youtubeId: 'pq-pTTrLmes',
-    duration: '22:17',
-    language: 'francais',
-    summary: 'Entretien historiographique fondamental sur la genèse, les traditions orales et les mouvements migratoires initiaux des Batammariba.',
-    editorialStatus: 'publie',
-    category: {
-      _id: 'cat-histoire',
-      _type: 'category',
-      title: 'Histoire & Mémoire',
-      slug: { current: 'histoire-et-memoire' },
-      pillar: 'documentation',
-    },
-  },
-  {
-    _id: 'v-2',
-    _type: 'video',
-    title: 'Entretien avec le Professeur Didier N\'DAH sur la valorisation de tacienta (tata somba)',
-    slug: { current: 'didier-ndah-valorisation-tacienta' },
-    youtubeId: 'c3C_9sWtHtQ',
-    duration: '14:22',
-    language: 'francais',
-    summary: 'Analyse archéologique et architecturale de la Takienta, emblème du génie constructif en terre et forteresse familiale des Batammariba.',
-    editorialStatus: 'publie',
-    category: {
-      _id: 'cat-architecture',
-      _type: 'category',
-      title: 'Culture & Traditions',
-      slug: { current: 'culture-et-traditions' },
-      pillar: 'documentation',
-    },
-  },
-  {
-    _id: 'v-3',
-    _type: 'video',
-    title: '« L\'Atacora était peuplé déjà au 3è siècle d\'après mes fouilles archéologiques » — Dr Gérard K. TIDOUO',
-    slug: { current: 'atacora-peuplement-3e-siecle-tidouo' },
-    youtubeId: 'nb62kCbckiw',
-    duration: '37:11',
-    language: 'francais',
-    summary: 'Révélations scientifiques majeures sur l\'ancienneté de l\'occupation humaine dans la chaîne de l\'Atacora et la culture matérielle ancienne.',
-    editorialStatus: 'publie',
-    category: {
-      _id: 'cat-archeologie',
-      _type: 'category',
-      title: 'Histoire & Mémoire',
-      slug: { current: 'histoire-et-memoire' },
-      pillar: 'documentation',
-    },
-  },
-];
+const featuredArticle: Article = articles[0] || fallbackArticles[0];
+const sampleVideos: Video[] = videos.length > 0 ? videos.slice(0, 3) : fallbackVideos.slice(0, 3);
 ---
 
 <Layout

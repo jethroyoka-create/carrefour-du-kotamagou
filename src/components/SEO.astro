@@ -66,6 +66,21 @@ const imageURL = new URL(image, Astro.site || "https://carrefour-du-kotamagou.pa
   "url": canonicalURL.toString(),
   "image": imageURL.toString(),
   "inLanguage": "fr",
+  ...(isArticle ? {
+    "publisher": {
+      "@type": "NewsMediaOrganization",
+      "name": siteName,
+      "url": "https://carrefour-du-kotamagou.pages.dev",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://carrefour-du-kotamagou.pages.dev/favicon.svg"
+      }
+    },
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": canonicalURL.toString()
+    }
+  } : {}),
   ...(articlePubTime ? { "datePublished": articlePubTime } : {}),
   ...(articleAuthor ? { "author": { "@type": "Person", "name": articleAuthor } } : {})
 })} />

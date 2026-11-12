@@ -165,7 +165,20 @@ export default defineType({
         layout: 'radio',
       },
       initialValue: 'brouillon',
-      validation: (rule) => rule.required(),
+      validation: (rule) =>
+        rule.required().custom((status, context) => {
+          if (status === 'publie') {
+            const doc = context.document as any;
+            const cv = doc?.culturalValidation;
+            if (cv?.sensitivityLevel === 'sacre' && !cv?.culturalValidated) {
+              return 'Une archive vidéo classée "Sacrée" ne peut être publiée sans validation coutumière formelle.';
+            }
+            if (cv && cv.rightsVerified === false) {
+              return 'Les autorisations des intervenants et droits de diffusion doivent être confirmés avant mise en ligne.';
+            }
+          }
+          return true;
+        }),
     }),
     defineField({
       name: 'culturalValidation',

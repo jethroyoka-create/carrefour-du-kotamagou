@@ -179,7 +179,20 @@ export default defineType({
         layout: 'radio',
       },
       initialValue: 'brouillon',
-      validation: (rule) => rule.required(),
+      validation: (rule) =>
+        rule.required().custom((status, context) => {
+          if (status === 'publie') {
+            const doc = context.document as any;
+            const cv = doc?.culturalValidation;
+            if (cv?.sensitivityLevel === 'sacre' && !cv?.culturalValidated) {
+              return 'Un contenu classé "Sacré" ne peut être publié sans validation culturelle confirmée.';
+            }
+            if (cv && cv.rightsVerified === false) {
+              return 'Les droits de diffusion et autorisations des témoins doivent être vérifiés avant publication.';
+            }
+          }
+          return true;
+        }),
     }),
     defineField({
       name: 'culturalValidation',
