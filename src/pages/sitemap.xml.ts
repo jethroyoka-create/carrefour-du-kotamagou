@@ -4,11 +4,34 @@ import { articlesQuery } from '../lib/sanity/queries';
 import { fallbackArticles } from '../lib/sanity/fallback';
 import type { Article } from '../lib/sanity/types';
 
-export const GET: APIRoute = async ({ site }) => {
-  const baseUrl = (site ? site.toString() : (import.meta.env.PUBLIC_SITE_URL || 'https://carrefour-du-kotamagou.pages.dev')).replace(/\/$/, '');
+/**
+ * Échappement des caractères réservés en XML (RFC 3023 / W3C XML 1.0)
+ */
+function escapeXml(unsafe: string): string {
+  return unsafe.replace(/[<>&'"]/g, (c) => {
+    switch (c) {
+      case '<':
+        return '&lt;';
+      case '>':
+        return '&gt;';
+      case '&':
+        return '&amp;';
+      case "'":
+        return '&apos;';
+      case '"':
+        return '&quot;';
+      default:
+        return c;
+    }
+  });
+}
 
-  // 1. Pages statiques du média
-  // IMPORTANT SEO : /404 est strictement exclue
+export const GET: APIRoute = async ({ site }) => {
+  const rawBaseUrl = (site ? site.toString() : (import.meta.env.PUBLIC_SITE_URL || 'https://carrefour-du-kotamagou.pages.dev')).replace(/\/$/, '');
+  const baseUrl = escapeXml(rawBaseUrl);
+
+  // 1. Pages statiques publiques fondamentales
+  // RÈGLE SEO IMPÉRATIVE : La page 404 est strictement et rigoureusement exclue
   const staticPages = [
     { url: '/', changefreq: 'daily', priority: '1.0' },
     { url: '/actualites/', changefreq: 'daily', priority: '0.9' },
@@ -24,7 +47,7 @@ export const GET: APIRoute = async ({ site }) => {
     { url: '/politique-de-confidentialite/', changefreq: 'yearly', priority: '0.3' },
   ];
 
-  // 2. Récupération dynamique des articles publiés (Sanity ou fallback vérifié)
+  // 2. Récupération dynamique des articles publiés respectant les verrous de conformité
   let articles: Article[] = [];
   try {
     articles = await client.fetch<Article[]>(articlesQuery);
@@ -40,11 +63,12 @@ export const GET: APIRoute = async ({ site }) => {
       try {
         lastmod = new Date(article.publishedAt).toISOString().split('T')[0];
       } catch {
-        // format invalide ignoré
+        // Date non conforme ignorée
       }
     }
+    const safeSlug = encodeURIComponent(article.slug.current);
     return {
-      url: `/articles/${article.slug.current}/`,
+      url: `/articles/${safeSlug}/`,
       lastmod,
       changefreq: 'monthly',
       priority: '0.8',
@@ -56,7 +80,7 @@ export const GET: APIRoute = async ({ site }) => {
 ${staticPages
   .map(
     (page) => `  <url>
-    <loc>${baseUrl}${page.url}</loc>
+    <loc>${baseUrl}${escapeXml(page.url)}</loc>
     <changefreq>${page.changefreq}</changefreq>
     <priority>${page.priority}</priority>
   </url>`
@@ -65,7 +89,7 @@ ${staticPages
 ${dynamicArticles
   .map(
     (art) => `  <url>
-    <loc>${baseUrl}${art.url}</loc>${art.lastmod ? `\n    <lastmod>${art.lastmod}</lastmod>` : ''}
+    <loc>${baseUrl}${escapeXml(art.url)}</loc>${art.lastmod ? `\n    <lastmod>${art.lastmod}</lastmod>` : ''}
     <changefreq>${art.changefreq}</changefreq>
     <priority>${art.priority}</priority>
   </url>`

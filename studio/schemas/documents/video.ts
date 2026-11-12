@@ -170,10 +170,13 @@ export default defineType({
           if (status === 'publie') {
             const doc = context.document as any;
             const cv = doc?.culturalValidation;
+            if (!cv?.sensitivityLevel || !['standard', 'sensible', 'sacre'].includes(cv.sensitivityLevel)) {
+              return 'Le niveau de sensibilité doit être expressément défini ("standard", "sensible" ou "sacré") avant toute diffusion en ligne.';
+            }
             if (cv?.rightsVerified !== true) {
               return 'Les autorisations des intervenants et droits de diffusion doivent être formellement confirmés (rightsVerified == true) avant mise en ligne.';
             }
-            if (cv?.sensitivityLevel && cv?.sensitivityLevel !== 'standard' && cv?.culturalValidated !== true) {
+            if (['sensible', 'sacre'].includes(cv.sensitivityLevel) && cv?.culturalValidated !== true) {
               return `Une archive vidéo dont la sensibilité est "${cv.sensitivityLevel}" ne peut être publiée sans validation culturelle formelle (culturalValidated == true).`;
             }
           }

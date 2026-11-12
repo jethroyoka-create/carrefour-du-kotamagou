@@ -184,10 +184,13 @@ export default defineType({
           if (status === 'publie') {
             const doc = context.document as any;
             const cv = doc?.culturalValidation;
+            if (!cv?.sensitivityLevel || !['standard', 'sensible', 'sacre'].includes(cv.sensitivityLevel)) {
+              return 'Le niveau de sensibilité doit être expressément défini ("standard", "sensible" ou "sacré") avant toute publication en ligne.';
+            }
             if (cv?.rightsVerified !== true) {
               return 'Les droits de diffusion et autorisations des témoins doivent être formellement vérifiés (rightsVerified == true) avant publication.';
             }
-            if (cv?.sensitivityLevel && cv?.sensitivityLevel !== 'standard' && cv?.culturalValidated !== true) {
+            if (['sensible', 'sacre'].includes(cv.sensitivityLevel) && cv?.culturalValidated !== true) {
               return `Un contenu dont la sensibilité est "${cv.sensitivityLevel}" ne peut être publié sans validation culturelle formelle (culturalValidated == true).`;
             }
           }
