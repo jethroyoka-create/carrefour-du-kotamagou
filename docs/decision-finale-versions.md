@@ -25,7 +25,7 @@ Cette mission a été exécutée dans un environnement strictement isolé, sans 
 | :--- | :--- | :--- | :--- |
 | **Statut de maintenance officiel** | **Obsolète / Non maintenu** (Documentation classée en archive legacy par l'équipe Astro). | **Transitoire** (Remplacé par Astro 6 puis Astro 7 ; maintenance limitée aux correctifs critiques). | **Activement maintenu** (Dernière version majeure stable officielle du framework). |
 | **Support de sécurité** | Aucun correctif de sécurité officiel. Risque de CVE non corrigées dans le moteur. | Maintenance de sécurité réduite (cycle de vie centré sur la branche majeure courante). | Support de sécurité actif, réactivité immédiate de l'équipe de développement. |
-| **Compatibilité Node.js 24** | Partielle / Non garantie officiellement (moteur Vite 5 legacy). | Compatible Node 24 sous conditions d'options strictes. | **Pleine compatibilité native avec Node.js 24 LTS** (moteur Vite 6 moderne). |
+| **Compatibilité Node.js 24** | Partielle / Non garantie officiellement (moteur Vite 5 legacy). | Compatible Node 24 sous conditions d'options strictes. | **Pleine compatibilité native avec Node.js 24 LTS** (moteur Vite 8 moderne, `vite@8.3.8`). |
 | **Dépendance Tailwind** | Dépendait de `@astrojs/tailwind` (désormais déprécié). | Dépendait de `@astrojs/tailwind` (bloqué à `astro <= 5`). | **Indépendant** via le pipeline standard PostCSS / Vite (`postcss.config.mjs`). |
 | **Risque technique à 12-24 mois** | **Critique** : Dette technique immédiate, blocage des évolutions futures. | **Moyen à élevé** : Nécessitera une migration majeure obligatoire à court terme. | **Nul à très faible** : Socle moderne pérenne pour tout le cycle de vie du MVP. |
 | **Recommandation** | Rejet formel. | Option de repli temporaire uniquement. | **Recommandé pour la fusion.** |
@@ -94,7 +94,7 @@ L'évaluation approfondie menée en environnement isolé a permis d'isoler préc
 | Composant | Version retenue | Justification technique et rôle dans le projet |
 | :--- | :--- | :--- |
 | **Node.js** | **24.22.3 LTS** | Version LTS active à long terme. Alignée dans `.nvmrc`, `package.json` et `.env.example` pour Cloudflare Pages. |
-| **Astro** | **7.4.11** | Dernière version majeure stable. Moteur Vite 6 ultra-rapide, 0 avertissement, maintenance active de long terme. |
+| **Astro** | **7.4.11** | Dernière version majeure stable. Moteur Vite 8 (`vite@8.3.8`) ultra-rapide, 0 avertissement, maintenance active de long terme. |
 | **Intégration CSS** | **PostCSS 8 + Autoprefixer 10** | Remplacement officiel et propre de `@astrojs/tailwind`. Découplage complet entre Astro et les outils de style. |
 | **Tailwind CSS** | **3.4.19** | Stabilité totale. Conservation exacte des classes, des tokens éditoriaux (`kaolin`, `charbon`, `ocre`, `vert`, `sable`) et de la charte visuelle. |
 | **Sanity Studio** | **4.22.1** | Moteur de back-office pérenne, support natif de Node 24, 0 conflit de dépendances, 100 % compatible avec les 8 schémas. |
