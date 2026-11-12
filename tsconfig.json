@@ -6,5 +6,12 @@
       "@/*": ["src/*"]
     },
     "strictNullChecks": true
-  }
+  },
+  "exclude": [
+    "dist",
+    ".astro",
+    "studio",
+    "node_modules",
+    "scratch"
+  ]
 }
